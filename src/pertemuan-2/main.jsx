@@ -1,7 +1,11 @@
 import { createRoot } from "react-dom/client";
 import BiodataDiri from "./BiodataDiri";
-import './custom.css';
+import LaporanForm from "../pertemuan-3/LaporanForm";
+import "../tailwind.css";
 
 createRoot(document.getElementById("root")).render(
-  <BiodataDiri />
+  <>
+    <BiodataDiri />
+    <LaporanForm />
+  </>
 );

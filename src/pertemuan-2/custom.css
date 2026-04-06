@@ -88,6 +88,9 @@ body::after {
     box-shadow: 0 15px 30px rgba(255, 160, 180, 0.2);
     transition: all 0.4s ease;
     cursor: pointer;
+
+    display:block;
+    margin: 0 auto;
 }
 
 .avatar:hover {
