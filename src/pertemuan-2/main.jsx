@@ -5,7 +5,7 @@ import "../tailwind.css";
 
 createRoot(document.getElementById("root")).render(
   <>
-    <BiodataDiri />
-    <LaporanForm />
+    {/* <BiodataDiri /> */}
+    {/* <LaporanForm /> */}
   </>
 );
