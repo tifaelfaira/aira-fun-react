@@ -1,62 +1,35 @@
-import React from 'react';
-import { LuFilter } from "react-icons/lu";
+import React from "react";
 
-export default function PageHeader(props) {
-    const renderBreadcrumb = () => {
-        if (Array.isArray(props.breadcrumb)) {
-            return props.breadcrumb.map((item, index) => (
-                <React.Fragment key={index}>
-                    {/* Ganti text-hijau jadi text-amber-600 agar konsisten emas */}
-                    <span className={`text-gray-400 ${index === props.breadcrumb.length - 1 ? 'font-black text-amber-600' : ''}`}>
-                        {item}
-                    </span>
-                    {index < props.breadcrumb.length - 1 && <span className="text-gray-400">/</span>}
-                </React.Fragment>
-            ));
-        }
-        return <span className="text-gray-400 font-black text-amber-600">{props.breadcrumb}</span>;
-    };
-
+export default function PageHeader({ title, breadcrumb = ["Home", "Page"], children }) {
     return (
-        <div id="pageheader-container" className="p-4 mt-2">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div id="pageheader-left" className="flex flex-col">
-                    <span id="page-title" className="text-3xl font-black text-zinc-800 tracking-tight">
-                       {props.title}
-                    </span>
-                    <div id="breadcrumb-links" className="flex items-center font-bold space-x-2 mt-1 text-[10px] uppercase tracking-widest">
-                        <span className="text-zinc-300">Home</span>
-                        <span className="text-zinc-300">/</span>
-                        {renderBreadcrumb()}
-                    </div>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 px-2 animate-fadeIn">
+            <div>
+                {/* Breadcrumb Gaya Minimalis */}
+                <div className="flex items-center gap-2 mb-2">
+                    {breadcrumb.map((item, index) => (
+                        <React.Fragment key={index}>
+                            <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${
+                                index === breadcrumb.length - 1 ? "text-amber-600" : "text-zinc-300"
+                            }`}>
+                                {item}
+                            </span>
+                            {index < breadcrumb.length - 1 && (
+                                <span className="text-[8px] text-zinc-200">•</span>
+                            )}
+                        </React.Fragment>
+                    ))}
                 </div>
-
-                <div className="flex items-center gap-4">
-                    {/* Tombol Add (Children) - Otomatis ikut style dari parent */}
-                    {props.children}
-
-                    {/* Filter Tab - Sekarang sudah tema Midnight Amber */}
-                    <div id="header-filter" className="flex items-center bg-white p-1.5 rounded-2xl shadow-sm border border-zinc-100">
-                        <div className="flex items-center px-3 text-zinc-400 border-r border-zinc-100 mr-1">
-                            <LuFilter size={14} />
-                        </div>
-                        <div className="flex space-x-1">
-                            {/* Ganti bg-hijau jadi bg-zinc-900 (Hitam) & text-amber-500 (Emas) */}
-                            <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-tighter bg-zinc-900 text-amber-500 rounded-xl shadow-lg transition-all">
-                                Daily
-                            </button>
-                            <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-tighter text-zinc-400 hover:text-zinc-800 hover:bg-zinc-50 rounded-xl transition-all">
-                                Weekly
-                            </button>
-                            <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-tighter text-zinc-400 hover:text-zinc-800 hover:bg-zinc-50 rounded-xl transition-all">
-                                Monthly
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                
+                {/* Page Title */}
+                <h1 className="text-4xl font-black text-zinc-900 tracking-tighter uppercase italic">
+                    {title.split(' ')[0]} <span className="text-amber-500">{title.split(' ').slice(1).join(' ')}</span>
+                </h1>
             </div>
-            {/* Garis pemisah tipis */}
-            <div className="w-full h-[1px] bg-zinc-100 mt-6"></div>
+
+            {/* Tempat Naruh Tombol "Tambah Data" dll */}
+            <div className="flex items-center gap-3">
+                {children}
+            </div>
         </div>
     );
 }
