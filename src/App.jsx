@@ -19,6 +19,7 @@ const Register = lazy(() => import("./pages/auth/Register"));
 const Forgot = lazy(() => import("./pages/auth/Forgot"));
 const Products = lazy(() => import("./pages/Products"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
+const Components = lazy(() => import("./pages/Components")); // <-- 1. CUMA NAMBAH INI DOANG DI IMPORT LAZY KAP!
 
 function App() {
   const [count, setCount] = useState(0);
@@ -34,6 +35,7 @@ function App() {
           <Route path="/customers" element={<Customers />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/components" element={<Components />} /> {/* <-- 2. CUMA SELIPIN INI DI BAWAH PRODUCTS PAS! */}
 
           <Route 
             path="/error-400" 

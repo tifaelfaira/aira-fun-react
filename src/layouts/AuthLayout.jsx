@@ -23,7 +23,7 @@ export default function AuthLayout() {
           <div className="w-10 h-10 bg-[#FFB800] rounded-xl flex items-center justify-center text-white shadow-sm">
             <FaScissors className="text-xl" /> 
           </div>
-          <span className="text-2xl font-bold text-[#111111] tracking-tight">Captain</span>
+          <span className="text-2xl font-bold text-[#111111] tracking-tight">Gentle cut</span>
         </div>
       </header>
 
