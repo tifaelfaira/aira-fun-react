@@ -20,6 +20,8 @@ const Forgot = lazy(() => import("./pages/auth/Forgot"));
 const Products = lazy(() => import("./pages/Products"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const Components = lazy(() => import("./pages/Components")); // <-- 1. CUMA NAMBAH INI DOANG DI IMPORT LAZY KAP!
+const Treatments = lazy(() => import("./pages/Treatments")); // <-- TAMBAHAN TERBARU PERTEMUAN 11 UNTUK GENTLECUT!
+
 
 function App() {
   const [count, setCount] = useState(0);
@@ -36,6 +38,7 @@ function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/components" element={<Components />} /> {/* <-- 2. CUMA SELIPIN INI DI BAWAH PRODUCTS PAS! */}
+          <Route path="/treatments" element={<Treatments />} /> {/* <-- ROUTE TERBARU PERTEMUAN 11 UNTUK GENTLECUT! */}
 
           <Route 
             path="/error-400" 
