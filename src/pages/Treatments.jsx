@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-// IMPORT 3 KOMPONEN UTAMA SHADCN UI (SYARAT WAJIB PERTEMUAN 11)
+// IMPORT 3 KOMPONEN UTAMA SHADCN UI Saya
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
 
 import { Switch } from "@/components/ui/switch";
 
-// DATA DUMMY LEBIH BANYAK & PADAT (Mirip CRM BerryLaundry temanmu)
+// DATA DUMMY GentleCut 
 const initialTreatments = [
   { id: "TRT-0001", name: "GentleCut Haircut & Wash", category: "Haircut", duration: "45 Menit", description: "Potong rambut premium + cuci bilas handuk hangat", price: "Rp 75.000", available: true },
   { id: "TRT-0002", name: "Premium Beard Shaving", category: "Shaving", duration: "30 Menit", description: "Cukur jenggot mulus + pijat wajah relaksasi", price: "Rp 50.000", available: true },
@@ -108,7 +108,7 @@ export default function Treatments() {
         </div>
       </div>
 
-      {/* TABLE DATA SECTION (DIBUAT RAMAI MIRIP BERRYLAUNDRY) */}
+      {/* TABLE DATA SECTION  */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden border">
         <table className="w-full text-left border-collapse">
           <thead>
@@ -149,7 +149,7 @@ export default function Treatments() {
                   </div>
                 </td>
 
-                {/* KOLOM AKSI BIAR MIRIP BANGET PUNYA TEMENMU */}
+                {/* KOLOM AKSI  */}
                 <td className="p-4">
                   <div className="flex items-center justify-center gap-2 text-base">
                     <button className="text-blue-500 hover:text-blue-700 cursor-pointer" title="Lihat">👁</button>
