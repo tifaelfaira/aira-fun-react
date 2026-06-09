@@ -1,4 +1,4 @@
-import { useState, Suspense, lazy } from "react"; // Tambahkan Suspense & lazy
+import { useState, useEffect, Suspense, lazy } from "react"; // Tambahkan useEffect di sini
 import React from "react";
 import "./assets/tailwind.css"; 
 import { Route, Routes } from "react-router-dom";
@@ -19,12 +19,22 @@ const Register = lazy(() => import("./pages/auth/Register"));
 const Forgot = lazy(() => import("./pages/auth/Forgot"));
 const Products = lazy(() => import("./pages/Products"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
-const Components = lazy(() => import("./pages/Components")); // <-- 1. CUMA NAMBAH INI DOANG DI IMPORT LAZY KAP!
-const Treatments = lazy(() => import("./pages/Treatments")); // <-- TAMBAHAN TERBARU PERTEMUAN 11 UNTUK GENTLECUT!
+const Components = lazy(() => import("./pages/Components")); 
+const Treatments = lazy(() => import("./pages/Treatments")); 
 
 
 function App() {
   const [count, setCount] = useState(0);
+
+  // --- KODE TAMBAHAN BARU UNTUK SESI LOGIN GENTLECUT ---
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+      return localStorage.getItem("isLoggedIn") === "true";
+  });
+
+  useEffect(() => {
+      localStorage.setItem("isLoggedIn", isLoggedIn);
+  }, [isLoggedIn]);
+  // -----------------------------------------------------
 
   return (
     /* 3. Bungkus Routes dengan Suspense dan panggil komponen Loading */
@@ -37,8 +47,8 @@ function App() {
           <Route path="/customers" element={<Customers />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
-          <Route path="/components" element={<Components />} /> {/* <-- 2. CUMA SELIPIN INI DI BAWAH PRODUCTS PAS! */}
-          <Route path="/treatments" element={<Treatments />} /> {/* <-- ROUTE TERBARU PERTEMUAN 11 UNTUK GENTLECUT! */}
+          <Route path="/components" element={<Components />} /> 
+          <Route path="/treatments" element={<Treatments />} /> 
 
           <Route 
             path="/error-400" 

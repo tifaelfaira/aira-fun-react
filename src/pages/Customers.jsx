@@ -7,13 +7,10 @@ import {
 import PageHeader from "../components/PageHeader";
 
 export default function Customers() {
-    // State untuk toggle Form vs List
     const [showForm, setShowForm] = useState(false);
     
-    // State untuk Filter Berdasarkan Level Membership
     const [selectedLevel, setSelectedLevel] = useState("ALL");
 
-    // State untuk Kolom Pencarian (Search Bar)
     const [searchQuery, setSearchQuery] = useState("");
     
     // Data dummy diperluas fiturnya agar menampung kolom baru dari data asli Excel

@@ -20,13 +20,23 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    axios.post("https://dummyjson.com/user/login", {
-      username: dataForm.email,
-      password: dataForm.password,
-    })
-    .then((res) => { if (res.status === 200) navigate("/"); })
-    .catch((err) => { setError(err.response?.data?.message || "Email atau Password salah"); })
-    .finally(() => { setLoading(false); });
+
+    // BYPASS LOGIN KHUSUS USERNAME RAYEL DAN PW 050175
+    if (dataForm.email === "rayel" && dataForm.password === "050175") {
+      setTimeout(() => {
+        setLoading(false);
+        navigate("/");
+      }, 800);
+    } else {
+      // JIKA INPUT BUKAN RAYEL, TETAP LOGIN KE DUMMYJSON SEPERTI BIASA
+      axios.post("https://dummyjson.com/user/login", {
+        username: dataForm.email,
+        password: dataForm.password,
+      })
+      .then((res) => { if (res.status === 200) navigate("/"); })
+      .catch((err) => { setError(err.response?.data?.message || "Email atau Password salah"); })
+      .finally(() => { setLoading(false); });
+    }
   };
 
   return (

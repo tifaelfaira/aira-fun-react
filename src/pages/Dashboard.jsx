@@ -1,4 +1,5 @@
-import { FiTrendingUp, FiTrendingDown, FiActivity } from "react-icons/fi";
+import { FiTrendingUp, FiTrendingDown, FiActivity, FiSearch } from "react-icons/fi"; 
+import { useState, useRef, useEffect } from "react"; // ================= TANDAI: IMPORT useRef DAN useEffect DI SINI =================
 import { 
     ResponsiveContainer, AreaChart, Area, XAxis, Tooltip, CartesianGrid,
     PieChart, Pie, Cell 
@@ -69,6 +70,23 @@ function BarbershopServiceIcon() {
 }
 
 export default function Dashboard() {
+    // ================= TANDAI: 1. INISIALISASI useRef UNTUK INPUT PENCARIAN =================
+    const searchInputRef = useRef(null); 
+    const [searchQuery, setSearchQuery] = useState("");
+
+    // ================= TANDAI: 2. MENEMBAK FOKUS KURSOR SAAT DASHBOARD DIBUKA =================
+    useEffect(() => {
+        if (searchInputRef.current) {
+            searchInputRef.current.focus(); // Mengaktifkan kursor kedip otomatis di kolom cari
+        }
+    }, []);
+
+    // Fungsi pencarian logis untuk menyaring baris tabel
+    const filteredOrders = excelRecentOrders.filter(order => 
+        order.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        order.id.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <div className="animate-fadeIn space-y-8 bg-[#FAFAFA] min-h-screen p-4">
             
@@ -158,11 +176,27 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* ================= FIX TOTAL: TABEL MENGIKUTI STRUKTUR DUMMY EXCEL 100% ================= */}
+            {/* ================= TABEL DATA CUSTOMER DENGAN SEARCH BAR (useRef) ================= */}
             <div className="bg-white rounded-2xl border border-zinc-200/60 shadow-[0_2px_12px_rgba(0,0,0,0.01)] overflow-hidden">
-                <div className="p-6 border-b border-zinc-100">
-                    <h3 className="font-bold text-zinc-800 text-sm tracking-tight">Data Pelanggan Terbaru (CRM Database)</h3>
-                    <p className="text-xs text-zinc-400 mt-0.5">Sinkronisasi data langsung dengan lembar spreadsheet utama GentleCut</p>
+                <div className="p-6 border-b border-zinc-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h3 className="font-bold text-zinc-800 text-sm tracking-tight">Data Pelanggan Terbaru (CRM Database)</h3>
+                        <p className="text-xs text-zinc-400 mt-0.5">Sinkronisasi data langsung dengan lembar spreadsheet utama GentleCut</p>
+                    </div>
+                    
+                    <div className="relative w-full sm:w-64">
+                        <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 text-base" />
+                        
+                        {/* ================= TANDAI: 3. MEMASANG PROPERTI ref PADA INPUT SEARCH BAR ================= */}
+                        <input 
+                            ref={searchInputRef} 
+                            type="text" 
+                            placeholder="Cari ID / Nama..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-zinc-800 focus:bg-white focus:border-[#F2B438] focus:ring-1 focus:ring-[#F2B438] outline-none transition"
+                        />
+                    </div>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
@@ -177,26 +211,32 @@ export default function Dashboard() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-zinc-100 text-xs text-zinc-600">
-                            {excelRecentOrders.map((order) => (
-                                <tr key={order.id} className="hover:bg-zinc-50/50 transition">
-                                    <td className="p-4 pl-6 font-mono font-bold text-amber-600">{order.id}</td>
-                                    <td className="p-4 font-bold text-zinc-800">{order.name}</td>
-                                    <td className="p-4">
-                                        <span className={`inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${order.levelStyle}`}>
-                                            {order.level}
-                                        </span>
-                                    </td>
-                                    <td className="p-4 text-center font-bold text-zinc-700">{order.totalTx}x</td>
-                                    <td className="p-4 font-medium text-zinc-800">{order.lastItem}</td>
-                                    <td className="p-4 pr-6">
-                                        <span className={`px-2 py-1 rounded text-[10px] font-semibold ${
-                                            order.payment === "QRIS" ? "bg-blue-50 text-blue-700 border border-blue-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                                        }`}>
-                                            {order.payment}
-                                        </span>
-                                    </td>
+                            {filteredOrders.length > 0 ? (
+                                filteredOrders.map((order) => (
+                                    <tr key={order.id} className="hover:bg-zinc-50/50 transition">
+                                        <td className="p-4 pl-6 font-mono font-bold text-amber-600">{order.id}</td>
+                                        <td className="p-4 font-bold text-zinc-800">{order.name}</td>
+                                        <td className="p-4">
+                                            <span className={`inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${order.levelStyle}`}>
+                                                {order.level}
+                                            </span>
+                                        </td>
+                                        <td className="p-4 text-center font-bold text-zinc-700">{order.totalTx}x</td>
+                                        <td className="p-4 font-medium text-zinc-800">{order.lastItem}</td>
+                                        <td className="p-4 pr-6">
+                                            <span className={`px-2 py-1 rounded text-[10px] font-semibold ${
+                                                order.payment === "QRIS" ? "bg-blue-50 text-blue-700 border border-blue-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                            }`}>
+                                                {order.payment}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="6" className="p-8 text-center text-zinc-400 italic">Data pelanggan tidak ditemukan...</td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>
