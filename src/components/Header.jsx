@@ -36,7 +36,7 @@ export default function Header() {
                 {/* Profile Admin Section */}
                 <div className="flex items-center gap-3 pl-2 group cursor-pointer">
                     <div className="text-right hidden md:block">
-                        <p className="text-xs font-black text-zinc-800 leading-none group-hover:text-amber-600 transition-colors">GentleCut Barber</p>
+                        <p className="text-xs font-black text-zinc-800 leading-none group-hover:text-amber-600 transition-colors">Crown&Co Barber</p>
                         <p className="text-[10px] font-bold text-amber-600 mt-1 uppercase tracking-tighter">Admin Station</p>
                     </div>
                     <div className="w-11 h-11 rounded-2xl bg-zinc-900 border-2 border-white shadow-md flex items-center justify-center text-amber-500 font-black text-xs hover:scale-105 transition-transform">

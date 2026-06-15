@@ -8,8 +8,9 @@ import {
   FiSearch,
   FiChevronLeft,
   FiPackage,
-  FiLayers, // <-- INI TAMBAHAN IKON UNTUK MENU COMPONENTS KAP!
-  FiScissors, // <-- TAMBAHAN IKON UNTUK MENU TREATMENTS PERTEMUAN 11 GENTLECUT!
+  FiLayers,
+  FiScissors,
+  FiUserPlus, // <-- TAMBAHKAN INI
 } from "react-icons/fi";
 
 // LOGO PERSIS (Tetap utuh gak gua utak-atik)
@@ -40,8 +41,9 @@ export default function Sidebar() {
     { name: "Customers", path: "/customers", icon: <FiUsers /> },
     { name: "Orders", path: "/orders", icon: <FiShoppingCart /> },
     { name: "Products", path: "/products", icon: <FiPackage /> },
-    { name: "Components", path: "/components", icon: <FiLayers /> }, // <-- CUMA NAMBAH INI DI BAWAH PRODUCTS PAS!
-    { name: "Treatments", path: "/treatments", icon: <FiScissors /> }, // <-- MENU BARU PERTEMUAN 11 UNTUK GENTLECUT!
+    { name: "Components", path: "/components", icon: <FiLayers /> },
+    { name: "Treatments", path: "/treatments", icon: <FiScissors /> },
+    { name: "Users", path: "/users", icon: <FiUserPlus /> }, // <-- TAMBAHKAN INI
     { name: "Settings", path: "/settings", icon: <FiSettings /> },
   ];
 
@@ -56,7 +58,7 @@ export default function Sidebar() {
             <RealBarbershopChair />
           </div>
           <h1 className="text-white text-[22px] font-bold tracking-[-0.5px]">
-            GentleCut
+            CROWN&CO
           </h1>
         </div>
 

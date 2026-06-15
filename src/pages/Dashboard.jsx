@@ -1,5 +1,5 @@
-import { FiTrendingUp, FiTrendingDown, FiActivity, FiSearch } from "react-icons/fi"; 
-import { useState, useRef, useEffect } from "react"; // ================= TANDAI: IMPORT useRef DAN useEffect DI SINI =================
+import { FiTrendingUp, FiTrendingDown, FiActivity, FiSearch, FiUsers } from "react-icons/fi"; 
+import { useState, useRef, useEffect } from "react";
 import { 
     ResponsiveContainer, AreaChart, Area, XAxis, Tooltip, CartesianGrid,
     PieChart, Pie, Cell 
@@ -70,18 +70,36 @@ function BarbershopServiceIcon() {
 }
 
 export default function Dashboard() {
-    // ================= TANDAI: 1. INISIALISASI useRef UNTUK INPUT PENCARIAN =================
     const searchInputRef = useRef(null); 
     const [searchQuery, setSearchQuery] = useState("");
+    
+    // ================= TAMBAHAN: STATE UNTUK USER DARI SUPABASE =================
+    const [usersData, setUsersData] = useState([]);
+    const [loadingUsers, setLoadingUsers] = useState(false);
 
-    // ================= TANDAI: 2. MENEMBAK FOKUS KURSOR SAAT DASHBOARD DIBUKA =================
     useEffect(() => {
         if (searchInputRef.current) {
-            searchInputRef.current.focus(); // Mengaktifkan kursor kedip otomatis di kolom cari
+            searchInputRef.current.focus();
         }
     }, []);
 
-    // Fungsi pencarian logis untuk menyaring baris tabel
+    // ================= TAMBAHAN: FETCH USERS DARI SUPABASE =================
+    useEffect(() => {
+        const fetchUsers = async () => {
+            setLoadingUsers(true);
+            try {
+                const { userAPI } = await import("../services/userAPI");
+                const data = await userAPI.fetchUsers();
+                setUsersData(data.slice(0, 5)); // Ambil 5 user terbaru
+            } catch (err) {
+                console.error("Gagal load users:", err);
+            } finally {
+                setLoadingUsers(false);
+            }
+        };
+        fetchUsers();
+    }, []);
+
     const filteredOrders = excelRecentOrders.filter(order => 
         order.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         order.id.toLowerCase().includes(searchQuery.toLowerCase())
@@ -176,7 +194,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* ================= TABEL DATA CUSTOMER DENGAN SEARCH BAR (useRef) ================= */}
+            {/* ================= TABEL DATA CUSTOMER DENGAN SEARCH BAR ================= */}
             <div className="bg-white rounded-2xl border border-zinc-200/60 shadow-[0_2px_12px_rgba(0,0,0,0.01)] overflow-hidden">
                 <div className="p-6 border-b border-zinc-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
@@ -186,8 +204,6 @@ export default function Dashboard() {
                     
                     <div className="relative w-full sm:w-64">
                         <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 text-base" />
-                        
-                        {/* ================= TANDAI: 3. MEMASANG PROPERTI ref PADA INPUT SEARCH BAR ================= */}
                         <input 
                             ref={searchInputRef} 
                             type="text" 
@@ -235,6 +251,76 @@ export default function Dashboard() {
                             ) : (
                                 <tr>
                                     <td colSpan="6" className="p-8 text-center text-zinc-400 italic">Data pelanggan tidak ditemukan...</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* ================= TAMBAHAN: DAFTAR USER TERBARU DARI SUPABASE ================= */}
+            <div className="bg-white rounded-2xl border border-zinc-200/60 shadow-[0_2px_12px_rgba(0,0,0,0.01)] overflow-hidden">
+                <div className="p-6 border-b border-zinc-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h3 className="font-bold text-zinc-800 text-sm tracking-tight flex items-center gap-2">
+                            <FiUsers className="text-[#F2B438] text-base" />
+                            Daftar User Terbaru (Supabase)
+                        </h3>
+                        <p className="text-xs text-zinc-400 mt-0.5">Data user yang terdaftar di database Supabase</p>
+                    </div>
+                    <button 
+                        onClick={() => window.location.href = '/users'}
+                        className="text-xs font-semibold text-[#F2B438] hover:text-amber-600 transition flex items-center gap-1"
+                    >
+                        Lihat Semua User →
+                    </button>
+                </div>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-zinc-50 text-zinc-500 font-semibold text-[11px] uppercase tracking-wider border-b border-zinc-100">
+                                <th className="p-4 pl-6">No</th>
+                                <th className="p-4">Email</th>
+                                <th className="p-4">Nama Lengkap</th>
+                                <th className="p-4">Role</th>
+                                <th className="p-4 pr-6">Tanggal Daftar</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-100 text-xs text-zinc-600">
+                            {loadingUsers ? (
+                                <tr>
+                                    <td colSpan="5" className="p-8 text-center text-zinc-400">
+                                        <div className="flex justify-center items-center gap-2">
+                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-amber-500"></div>
+                                            Loading users...
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : usersData.length > 0 ? (
+                                usersData.map((user, index) => (
+                                    <tr key={user.id} className="hover:bg-zinc-50/50 transition">
+                                        <td className="p-4 pl-6 font-mono text-zinc-500">{index + 1}.</td>
+                                        <td className="p-4 font-medium text-zinc-800">{user.email}</td>
+                                        <td className="p-4 text-zinc-600">{user.full_name || "-"}</td>
+                                        <td className="p-4">
+                                            <span className={`inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+                                                user.role === 'admin' 
+                                                    ? 'bg-amber-100 text-amber-700 border border-amber-200' 
+                                                    : 'bg-gray-100 text-gray-600 border border-gray-200'
+                                            }`}>
+                                                {user.role}
+                                            </span>
+                                        </td>
+                                        <td className="p-4 pr-6 text-zinc-500">
+                                            {user.created_at ? new Date(user.created_at).toLocaleDateString('id-ID') : '-'}
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="p-8 text-center text-zinc-400">
+                                        Belum ada data user. Silahkan registrasi terlebih dahulu.
+                                    </td>
                                 </tr>
                             )}
                         </tbody>
