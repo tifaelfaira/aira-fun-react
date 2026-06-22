@@ -1,13 +1,96 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { 
   IoCutOutline, IoCalendarOutline, IoGiftOutline, 
   IoWalletOutline, IoStar, IoLogOutOutline, 
   IoPersonOutline, IoTimeOutline, IoCheckmarkCircle,
-  IoArrowForwardOutline
+  IoArrowForwardOutline, IoDiamondOutline, IoMedalOutline,
+  IoRibbonOutline, IoCloseOutline,
+  IoSparklesOutline, IoStarOutline
 } from "react-icons/io5";
 
 export default function MemberDashboard() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState("Reguler");
+  const [currentLevel, setCurrentLevel] = useState("Reguler");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Data paket membership
+  const membershipPackages = [
+    { 
+      level: "Reguler", 
+      icon: <IoStarOutline className="text-3xl" />, 
+      color: "from-gray-300 to-gray-400", 
+      textColor: "text-gray-600",
+      benefits: [
+        "Diskon 5% setiap transaksi",
+        "Poin 0.5x lipat",
+        "Akses ke semua layanan"
+      ],
+      price: "Gratis",
+      priceDetail: "Selamanya",
+      isPopular: false
+    },
+    { 
+      level: "Silver", 
+      icon: <IoMedalOutline className="text-3xl" />, 
+      color: "from-gray-400 to-gray-500", 
+      textColor: "text-gray-600",
+      benefits: [
+        "Diskon 10% setiap transaksi",
+        "Free konsultasi styling",
+        "Poin 1x lipat",
+        "Voucher ulang tahun Rp 25.000"
+      ],
+      price: "Rp 75.000",
+      priceDetail: "/ tahun",
+      isPopular: false
+    },
+    { 
+      level: "Gold", 
+      icon: <IoStar className="text-3xl" />, 
+      color: "from-amber-400 to-amber-600", 
+      textColor: "text-amber-600",
+      benefits: [
+        "Diskon 20% setiap transaksi",
+        "Free hair serum setiap bulan",
+        "Poin 2x lipat",
+        "Voucher ulang tahun Rp 50.000"
+      ],
+      price: "Rp 150.000",
+      priceDetail: "/ tahun",
+      isPopular: true
+    },
+    { 
+      level: "Premium", 
+      icon: <IoDiamondOutline className="text-3xl" />, 
+      color: "from-purple-500 to-purple-700", 
+      textColor: "text-purple-600",
+      benefits: [
+        "Diskon 30% setiap transaksi",
+        "Free treatment setiap bulan",
+        "Poin 3x lipat",
+        "Voucher ulang tahun Rp 100.000",
+        "Akses prioritas booking",
+        "Free hair product setiap 3 bulan"
+      ],
+      price: "Rp 350.000",
+      priceDetail: "/ tahun",
+      isPopular: false
+    }
+  ];
+
+  const handleUpgrade = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsModalOpen(false);
+      setCurrentLevel(selectedPackage);
+      alert(`🎉 Selamat! Anda berhasil upgrade ke paket ${selectedPackage}!`);
+    }, 1500);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -21,10 +104,21 @@ export default function MemberDashboard() {
           <IoCutOutline className="text-xl transform -rotate-45" />
           <span className="font-black uppercase tracking-wider text-amber-600">Member Area</span>
         </div>
-        <h1 className="text-3xl md:text-4xl font-black text-neutral-900">
-          Hai, <span className="text-amber-500">Member!</span>
-        </h1>
-        <p className="text-neutral-400 text-sm mt-1">Selamat datang di dashboard member Crown&Co.</p>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-black text-neutral-900">
+              Hai, <span className="text-amber-500">Member!</span>
+            </h1>
+            <p className="text-neutral-400 text-sm mt-1">Selamat datang di dashboard member Crown&Co.</p>
+          </div>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black text-xs px-5 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-2"
+          >
+            <IoSparklesOutline className="text-sm" />
+            Upgrade Membership
+          </button>
+        </div>
       </div>
 
       {/* Card Stats */}
@@ -130,6 +224,129 @@ export default function MemberDashboard() {
           ← Kembali ke Beranda
         </Link>
       </div>
+
+      {/* ========== MODAL UPGRADE MEMBERSHIP ========== */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="bg-white rounded-2xl max-w-4xl w-full p-6 max-h-[90vh] overflow-y-auto shadow-2xl"
+          >
+            {/* Header Modal */}
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h3 className="text-2xl font-black text-neutral-900 flex items-center gap-2">
+                  <IoRibbonOutline className="text-amber-500" />
+                  Upgrade Membership
+                </h3>
+                <p className="text-sm text-neutral-400 mt-1">Pilih paket yang sesuai dengan kebutuhanmu</p>
+              </div>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-full"
+              >
+                <IoCloseOutline className="text-2xl" />
+              </button>
+            </div>
+
+            {/* Member Saat Ini */}
+            <div className="bg-amber-50 rounded-xl p-3 mb-6 flex items-center justify-between">
+              <span className="text-sm text-neutral-600">📌 Member Saat Ini</span>
+              <span className={`font-black px-4 py-1 rounded-full shadow-sm border ${
+                currentLevel === "Gold" ? "text-amber-600 bg-white border-amber-200" :
+                currentLevel === "Premium" ? "text-purple-600 bg-white border-purple-200" :
+                currentLevel === "Silver" ? "text-gray-600 bg-white border-gray-200" :
+                "text-gray-500 bg-white border-gray-200"
+              }`}>
+                {currentLevel}
+              </span>
+            </div>
+
+            {/* Paket Membership */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {membershipPackages.map((pkg, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: idx * 0.1 }}
+                  className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${
+                    selectedPackage === pkg.level 
+                      ? 'border-amber-500 bg-amber-50 shadow-md' 
+                      : 'border-gray-200 hover:border-amber-300 hover:bg-amber-50/50'
+                  } ${pkg.level === "Gold" && selectedPackage !== pkg.level ? 'border-amber-300' : ''}`}
+                  onClick={() => setSelectedPackage(pkg.level)}
+                >
+                  {pkg.isPopular && (
+                    <div className="flex justify-between items-start">
+                      <div className="bg-amber-500 text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                        Popular
+                      </div>
+                    </div>
+                  )}
+                  {!pkg.isPopular && <div className="h-5"></div>}
+
+                  <div className="text-center">
+                    <div className={`w-14 h-14 mx-auto rounded-xl bg-gradient-to-br ${pkg.color} text-white flex items-center justify-center mb-2 ${selectedPackage === pkg.level ? 'scale-110' : ''} transition-transform`}>
+                      {pkg.icon}
+                    </div>
+                    <h4 className={`font-black text-lg ${pkg.textColor}`}>{pkg.level}</h4>
+                    <div className="flex items-center justify-center gap-1">
+                      <span className="font-black text-neutral-900">{pkg.price}</span>
+                      <span className="text-xs text-neutral-400">{pkg.priceDetail}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center mt-3">
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      selectedPackage === pkg.level 
+                        ? 'border-amber-500 bg-amber-500' 
+                        : 'border-gray-300'
+                    }`}>
+                      {selectedPackage === pkg.level && (
+                        <IoCheckmarkCircle className="text-white text-xs" />
+                      )}
+                    </div>
+                  </div>
+
+                  <ul className="mt-3 space-y-1.5 border-t border-gray-100 pt-3">
+                    {pkg.benefits.map((benefit, i) => (
+                      <li key={i} className="text-[10px] text-neutral-600 flex items-start gap-1.5">
+                        <IoCheckmarkCircle className={`text-${pkg.level === 'Gold' ? 'amber' : pkg.level === 'Premium' ? 'purple' : pkg.level === 'Silver' ? 'gray' : 'gray'}-500 text-[10px] flex-shrink-0 mt-0.5`} />
+                        {benefit}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              ))}
+            </div>
+
+            <button
+              onClick={handleUpgrade}
+              disabled={isLoading}
+              className="w-full mt-6 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black py-3.5 rounded-xl transition-all shadow-lg shadow-amber-500/30 text-sm uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                  Memproses...
+                </>
+              ) : (
+                <>
+                  <IoSparklesOutline className="text-lg" />
+                  Konfirmasi Upgrade ke {selectedPackage}
+                </>
+              )}
+            </button>
+
+            <p className="text-center text-[9px] text-neutral-400 mt-3">
+              ⚡ Upgrade dapat dilakukan kapan saja. Biaya akan dipotong dari saldo member.
+            </p>
+          </motion.div>
+        </div>
+      )}
     </motion.div>
   );
 }
