@@ -1,12 +1,10 @@
-import { useState, useEffect, Suspense, lazy } from "react"; // Tambahkan useEffect di sini
+import { useState, useEffect, Suspense, lazy } from "react";
 import React from "react";
 import "./assets/tailwind.css"; 
-import { Route, Routes } from "react-router-dom"; // Selesai diperbaiki ke dom!
+import { Route, Routes } from "react-router-dom";
 
-// 1. Import komponen Loading (Bukan lazy karena dipakai sebagai fallback utama)
 import Loading from "./components/Loading"; 
 
-// 2. IMPORT PAGES & LAYOUTS MENGGUNAKAN LAZY (Syarat P7)
 const MainLayout = lazy(() => import("./layouts/MainLayout"));
 const AuthLayout = lazy(() => import("./layouts/AuthLayout"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -21,17 +19,22 @@ const Products = lazy(() => import("./pages/Products"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const Components = lazy(() => import("./pages/Components")); 
 const Treatments = lazy(() => import("./pages/Treatments")); 
-const Users = lazy(() => import("./pages/Users")); // <-- TAMBAHKAN INI
+const Users = lazy(() => import("./pages/Users"));
 
-// --- TAMBAHAN IMPORT GUEST (LAZY SESUAI SYARAT P7) ---
 const Guest = lazy(() => import("./pages/Guest"));
-// -----------------------------------------------------
 
+// ================= IMPORT MEMBER =================
+const MemberLogin = lazy(() => import("./pages/member/MemberLogin"));
+const MemberRegister = lazy(() => import("./pages/member/MemberRegister"));
+const MemberDashboard = lazy(() => import("./pages/member/MemberDashboard"));
+const MemberProfile = lazy(() => import("./pages/member/MemberProfile"));
+const MemberHistory = lazy(() => import("./pages/member/MemberHistory"));
+const MemberVoucher = lazy(() => import("./pages/member/MemberVoucher")); // <-- TAMBAHKAN
+// =================================================
 
 function App() {
   const [count, setCount] = useState(0);
 
-  // --- KODE TAMBAHAN BARU UNTUK SESI LOGIN GENTLECUT ---
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
       return localStorage.getItem("isLoggedIn") === "true";
   });
@@ -39,18 +42,13 @@ function App() {
   useEffect(() => {
       localStorage.setItem("isLoggedIn", isLoggedIn);
   }, [isLoggedIn]);
-  // -----------------------------------------------------
 
   return (
-    /* 3. Bungkus Routes dengan Suspense dan panggil komponen Loading */
     <Suspense fallback={<Loading />}>
       <Routes>
-        {/* HALAMAN UTAMA SEKARANG LANGSUNG KE GUEST / LANDING PAGE */}
         <Route path="/" element={<Guest />} />
 
-        {/* GROUP LAYOUT UTAMA (DASHBOARD ADMIN) */}
         <Route element={<MainLayout />}>
-          {/* Path dashboard digeser ke /dashboard biar gak tabrakan */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/customers" element={<Customers />} />
@@ -58,7 +56,7 @@ function App() {
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/components" element={<Components />} /> 
           <Route path="/treatments" element={<Treatments />} /> 
-          <Route path="/users" element={<Users />} /> {/* <-- TAMBAHKAN ROUTE USERS */}
+          <Route path="/users" element={<Users />} />
 
           <Route 
             path="/error-400" 
@@ -76,11 +74,19 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
 
-        {/* GROUP LAYOUT AUTH */}
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot" element={<Forgot />} />
+          
+          {/* ================= ROUTE MEMBER ================= */}
+          <Route path="/member/login" element={<MemberLogin />} />
+          <Route path="/member/register" element={<MemberRegister />} />
+          <Route path="/member/dashboard" element={<MemberDashboard />} />
+          <Route path="/member/profile" element={<MemberProfile />} />
+          <Route path="/member/history" element={<MemberHistory />} />
+          <Route path="/member/voucher" element={<MemberVoucher />} /> {/* <-- TAMBAHKAN */}
+          {/* ================================================ */}
         </Route>
       </Routes>
     </Suspense>

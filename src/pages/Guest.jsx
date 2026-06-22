@@ -449,7 +449,8 @@ const galleryImages = [
               Crown<span className="text-amber-500">&Co.</span>
             </span>
           </div>
-          <div className={`hidden md:flex items-center gap-8 text-xs font-black tracking-widest transition-colors duration-300 ${
+          
+          <div className={`hidden md:flex items-center gap-6 text-xs font-black tracking-widest transition-colors duration-300 ${
             isScrolled ? 'text-neutral-600' : 'text-neutral-200'
           }`}>
             <a href="#tentang" className="hover:text-amber-500 transition-colors duration-200">TENTANG</a>
@@ -460,16 +461,30 @@ const galleryImages = [
             <a href="#gallery" className="hover:text-amber-500 transition-colors duration-200">GALLERY</a>
             <a href="#faq" className="hover:text-amber-500 transition-colors duration-200">FAQ</a>
           </div>
-          <button 
-            onClick={() => navigate('/login')}
-            className={`text-xs font-bold px-5 py-2.5 rounded-full flex items-center gap-2 transition-all shadow-sm ${
-              isScrolled 
-                ? 'bg-neutral-950 hover:bg-neutral-800 text-white' 
-                : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
-            }`}
-          >
-            Login Admin <IoArrowForwardOutline className="text-amber-500" />
-          </button>
+
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => navigate('/login')}
+              className={`text-[10px] font-bold px-3 py-1.5 rounded-full transition-all ${
+                isScrolled 
+                  ? 'text-neutral-600 hover:text-neutral-950' 
+                  : 'text-white/70 hover:text-white'
+              }`}
+            >
+              Login
+            </button>
+            <span className={`text-[10px] ${isScrolled ? 'text-neutral-300' : 'text-white/30'}`}>|</span>
+            <button 
+              onClick={() => navigate('/member/login')}
+              className={`text-[10px] font-bold px-3 py-1.5 rounded-full transition-all ${
+                isScrolled 
+                  ? 'text-amber-500 hover:text-amber-600' 
+                  : 'text-amber-400 hover:text-amber-300'
+              }`}
+            >
+              Member
+            </button>
+          </div>
         </nav>
       </div>
 
@@ -856,10 +871,10 @@ const galleryImages = [
                 <p className="text-neutral-400 text-[11px] max-w-md">Dapatkan diskon 20% untuk first visit + voucher Rp 25.000 + gratis hair serum.</p>
               </div>
               <button 
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/member/register')}
                 className="group bg-amber-500 hover:bg-amber-400 text-black font-black text-[10px] uppercase tracking-widest px-6 py-3 rounded-xl transition-all duration-300 shadow-lg shadow-amber-500/20 flex items-center gap-2 hover:gap-3"
               >
-                <span>Daftar Sekarang</span>
+                <span>Daftar Member</span>
                 <IoArrowForwardOutline className="text-xs group-hover:translate-x-1 transition-transform duration-300" />
               </button>
             </div>
@@ -871,7 +886,7 @@ const galleryImages = [
         </div>
       </section>
 
-      {/* --- RATING CEPSTER SECTION --- */}
+      {/* --- RATING CEPSTER SECTION (DENGAN BOOKING OTOMATIS) --- */}
       <section id="rating" ref={ratingSectionRef} className="py-20 px-6 md:px-12 bg-white select-none overflow-hidden relative z-10">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center opacity-15 filter grayscale"></div>
@@ -950,11 +965,17 @@ const galleryImages = [
                   <span>Bersertifikasi Profesional</span>
                 </div>
 
+                {/* BOOKING OTOMATIS VIA WHATSAPP */}
                 <div className="mt-4 flex justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-y-0 translate-y-2">
-                  <button className="bg-neutral-950 hover:bg-amber-500 hover:text-black text-white font-black text-[8px] uppercase tracking-wider px-4 py-1.5 rounded-lg transition-all duration-300 flex items-center gap-1">
+                  <a
+                    href={`https://wa.me/6281234567890?text=Halo%20Crown%26Co.%2C%20saya%20mau%20booking%20dengan%20${encodeURIComponent(cepster.name)}%20(${encodeURIComponent(cepster.role)})`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-neutral-950 hover:bg-amber-500 hover:text-black text-white font-black text-[8px] uppercase tracking-wider px-4 py-1.5 rounded-lg transition-all duration-300 flex items-center gap-1"
+                  >
                     <span>Booking Cepster</span>
                     <IoArrowForwardOutline className="text-[8px]" />
-                  </button>
+                  </a>
                 </div>
               </div>
             ))}
@@ -1120,6 +1141,129 @@ const galleryImages = [
               </button>
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* --- FORM BOOKING OTOMATIS (WhatsApp) --- */}
+      <section className="py-16 px-6 md:px-12 bg-gradient-to-br from-amber-50/50 via-white to-amber-50/30">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-full">
+              <IoCalendarOutline className="text-amber-400 text-xs" />
+              <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Booking Online</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black text-neutral-900 mt-4">
+              Booking <span className="text-amber-500">Sekarang</span>
+            </h2>
+            <p className="text-neutral-500 text-sm mt-2 max-w-md mx-auto">
+              Isi form di bawah, kami akan langsung konfirmasi via WhatsApp
+            </p>
+          </div>
+
+          <form className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg border border-amber-100/50" onSubmit={(e) => {
+            e.preventDefault();
+            const form = e.target;
+            const name = form.name.value;
+            const phone = form.phone.value;
+            const service = form.service.value;
+            const date = form.date.value;
+            const time = form.time.value;
+            const notes = form.notes.value || '';
+            
+            const message = `Halo%20Crown%26Co.%0A%0A*FORM%20BOOKING%20CROWN%26CO.*%0A%0ANama%3A%20${encodeURIComponent(name)}%0ANo%20WA%3A%20${encodeURIComponent(phone)}%0ALayanan%3A%20${encodeURIComponent(service)}%0ATanggal%3A%20${encodeURIComponent(date)}%0AJam%3A%20${encodeURIComponent(time)}${notes ? `%0ACatatan%3A%20${encodeURIComponent(notes)}` : ''}`;
+            
+            window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
+          }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[10px] font-black text-neutral-400 uppercase tracking-wider mb-1 ml-1">
+                  Nama Lengkap <span className="text-amber-500">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  name="name" 
+                  placeholder="Masukkan nama Anda" 
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 outline-none transition text-sm" 
+                  required 
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-black text-neutral-400 uppercase tracking-wider mb-1 ml-1">
+                  No WhatsApp <span className="text-amber-500">*</span>
+                </label>
+                <input 
+                  type="tel" 
+                  name="phone" 
+                  placeholder="0812-3456-7890" 
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 outline-none transition text-sm" 
+                  required 
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-black text-neutral-400 uppercase tracking-wider mb-1 ml-1">
+                  Layanan <span className="text-amber-500">*</span>
+                </label>
+                <select 
+                  name="service" 
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 outline-none transition text-sm" 
+                  required
+                >
+                  <option value="">Pilih Layanan</option>
+                  <option value="Haircut & Styling">✂️ Haircut & Styling (Rp 85.000)</option>
+                  <option value="Scalp Therapy">💆 Scalp Therapy (Rp 130.000)</option>
+                  <option value="Coloring">🎨 Coloring (Rp 195.000)</option>
+                  <option value="Grooming">🧔 Grooming (Rp 60.000)</option>
+                  <option value="K-Treatment Package">✨ K-Treatment Package (Rp 250.000)</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] font-black text-neutral-400 uppercase tracking-wider mb-1 ml-1">
+                  Tanggal <span className="text-amber-500">*</span>
+                </label>
+                <input 
+                  type="date" 
+                  name="date" 
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 outline-none transition text-sm" 
+                  required 
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-[10px] font-black text-neutral-400 uppercase tracking-wider mb-1 ml-1">
+                  Jam Booking <span className="text-amber-500">*</span>
+                </label>
+                <input 
+                  type="time" 
+                  name="time" 
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 outline-none transition text-sm" 
+                  required 
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-[10px] font-black text-neutral-400 uppercase tracking-wider mb-1 ml-1">
+                  Catatan Tambahan <span className="text-neutral-300">(opsional)</span>
+                </label>
+                <textarea 
+                  name="notes" 
+                  rows="2" 
+                  placeholder="Tulis catatan khusus (misal: gaya rambut, alergi, dll)" 
+                  className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 outline-none transition text-sm resize-none"
+                />
+              </div>
+            </div>
+
+            <button 
+              type="submit" 
+              className="w-full mt-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black py-3.5 rounded-xl transition-all shadow-lg shadow-amber-500/30 text-sm uppercase tracking-wider flex items-center justify-center gap-2 group"
+            >
+              <IoLogoWhatsapp className="text-xl" />
+              Booking via WhatsApp
+              <IoArrowForwardOutline className="text-base group-hover:translate-x-1 transition-transform duration-300" />
+            </button>
+
+            <p className="text-center text-[9px] text-neutral-400 mt-3">
+              ⏱️ Kami akan merespon dalam waktu kurang dari 5 menit
+            </p>
+          </form>
         </div>
       </section>
 
