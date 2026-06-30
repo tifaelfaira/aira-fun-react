@@ -19,19 +19,22 @@ export const userAPI = {
         return data
     },
 
-    // Login user
+    // Login user (SUDAH DIPERBAIKI - .single() dihapus)
     async login(email, password) {
         const { data, error } = await supabase
             .from('users')
             .select('*')
             .eq('email', email)
             .eq('password', password)
-            .single()
+            // .single()  // <-- DIHAPUS
         
         if (error) throw error
-        if (!data) throw new Error("Email atau password salah!")
         
-        return data
+        if (!data || data.length === 0) {
+            throw new Error("Email atau password salah!")
+        }
+        
+        return data[0] // Ambil data pertama
     },
 
     // Get all users

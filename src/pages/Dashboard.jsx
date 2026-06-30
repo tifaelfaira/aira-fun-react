@@ -27,18 +27,18 @@ const pieData = [
 
 const COLORS = ['#F2B438', '#18181B', '#71717A', '#A1A1AA', '#E4E4E7'];
 
-// 3. DATA BARIS MURNI DIAMBIL DARI BARIS 1-7 EXCEL SPREADSHEET GENTLECUT
-const excelRecentOrders = [
-  { id: "GC-1001", name: "Hendra Kusuma", level: "Gold", totalTx: 17, lastItem: "Haircut & Wash", payment: "Tunai", levelStyle: "bg-amber-100 text-amber-800 border-amber-300" },
-  { id: "GC-1002", name: "Reza Pratama", level: "Regular", totalTx: 9, lastItem: "Gentle Shaving", payment: "QRIS", levelStyle: "bg-zinc-100 text-zinc-700 border-zinc-300" },
-  { id: "GC-1003", name: "Gavin Lubis", level: "Regular", totalTx: 12, lastItem: "Creambath & Massage", payment: "QRIS", levelStyle: "bg-zinc-100 text-zinc-700 border-zinc-300" },
-  { id: "GC-1797", name: "Zaki Santoso", level: "Silver", totalTx: 15, lastItem: "Creambath & Massage", payment: "Tunai", levelStyle: "bg-slate-100 text-slate-700 border-slate-300" },
-  { id: "GC-1796", name: "Aris Hidayat", level: "Regular", totalTx: 20, lastItem: "Creambath & Massage", payment: "QRIS", levelStyle: "bg-zinc-100 text-zinc-700 border-zinc-300" },
-  { id: "GC-1795", name: "Reza Purnomo", level: "Regular", totalTx: 24, lastItem: "Creambath & Massage", payment: "Tunai", levelStyle: "bg-zinc-100 text-zinc-700 border-zinc-300" }
+// 3. DATA CUSTOMER CROWN&CO.
+const crownRecentOrders = [
+  { id: "CRN-1001", name: "Hendra Kusuma", level: "Gold", totalTx: 17, lastItem: "Haircut & Styling", payment: "Tunai", levelStyle: "bg-amber-100 text-amber-800 border-amber-300" },
+  { id: "CRN-1002", name: "Reza Pratama", level: "Silver", totalTx: 9, lastItem: "K-Treatment Scalp", payment: "QRIS", levelStyle: "bg-gray-100 text-gray-700 border-gray-300" },
+  { id: "CRN-1003", name: "Gavin Lubis", level: "Reguler", totalTx: 12, lastItem: "Beard Grooming", payment: "QRIS", levelStyle: "bg-zinc-100 text-zinc-700 border-zinc-300" },
+  { id: "CRN-1797", name: "Zaki Santoso", level: "Gold", totalTx: 15, lastItem: "Coloring Ash Grey", payment: "Tunai", levelStyle: "bg-amber-100 text-amber-800 border-amber-300" },
+  { id: "CRN-1796", name: "Aris Hidayat", level: "Silver", totalTx: 20, lastItem: "Scalp Therapy", payment: "QRIS", levelStyle: "bg-gray-100 text-gray-700 border-gray-300" },
+  { id: "CRN-1795", name: "Reza Purnomo", level: "Reguler", totalTx: 24, lastItem: "Haircut & Styling", payment: "Tunai", levelStyle: "bg-zinc-100 text-zinc-700 border-zinc-300" }
 ];
 
 // SVGS ICON SET
-function FigmaKoinBulatIcon() {
+function CrownCoinIcon() {
   return (
     <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
       <circle cx="12" cy="12" r="10" />
@@ -47,7 +47,7 @@ function FigmaKoinBulatIcon() {
   );
 }
 
-function FigmaCalendarPutihIcon() {
+function CrownCalendarIcon() {
   return (
     <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
       <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -58,7 +58,7 @@ function FigmaCalendarPutihIcon() {
   );
 }
 
-function BarbershopServiceIcon() {
+function CrownScissorsIcon() {
   return (
     <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
       <circle cx="6" cy="6" r="3" />
@@ -73,7 +73,6 @@ export default function Dashboard() {
     const searchInputRef = useRef(null); 
     const [searchQuery, setSearchQuery] = useState("");
     
-    // ================= TAMBAHAN: STATE UNTUK USER DARI SUPABASE =================
     const [usersData, setUsersData] = useState([]);
     const [loadingUsers, setLoadingUsers] = useState(false);
 
@@ -83,14 +82,13 @@ export default function Dashboard() {
         }
     }, []);
 
-    // ================= TAMBAHAN: FETCH USERS DARI SUPABASE =================
     useEffect(() => {
         const fetchUsers = async () => {
             setLoadingUsers(true);
             try {
                 const { userAPI } = await import("../services/userAPI");
                 const data = await userAPI.fetchUsers();
-                setUsersData(data.slice(0, 5)); // Ambil 5 user terbaru
+                setUsersData(data.slice(0, 5));
             } catch (err) {
                 console.error("Gagal load users:", err);
             } finally {
@@ -100,7 +98,7 @@ export default function Dashboard() {
         fetchUsers();
     }, []);
 
-    const filteredOrders = excelRecentOrders.filter(order => 
+    const filteredOrders = crownRecentOrders.filter(order => 
         order.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         order.id.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -108,12 +106,12 @@ export default function Dashboard() {
     return (
         <div className="animate-fadeIn space-y-8 bg-[#FAFAFA] min-h-screen p-4">
             
-            {/* ================= CARD TOP STATS ================= */}
+            {/* CARD TOP STATS */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                    { label: "Total Revenue", val: "Rp 435.000", up: true, pct: "12.3%", icon: <FigmaKoinBulatIcon /> },
-                    { label: "Total Bookings", val: "2 Antrean", up: false, pct: "5.2%", icon: <FigmaCalendarPutihIcon /> },
-                    { label: "Total Services", val: "7 Layanan", up: true, pct: "16.6%", icon: <BarbershopServiceIcon /> }
+                    { label: "Total Revenue", val: "Rp 435.000", up: true, pct: "12.3%", icon: <CrownCoinIcon /> },
+                    { label: "Total Bookings", val: "2 Antrean", up: false, pct: "5.2%", icon: <CrownCalendarIcon /> },
+                    { label: "Total Services", val: "7 Layanan", up: true, pct: "16.6%", icon: <CrownScissorsIcon /> }
                 ].map((s, i) => (
                     <div key={i} className="bg-white p-6 rounded-2xl border border-zinc-200/60 shadow-[0_2px_12px_rgba(0,0,0,0.01)]">
                         <div className="w-11 h-11 bg-[#F2B438] rounded-xl flex items-center justify-center mb-4 shadow-sm">
@@ -133,7 +131,7 @@ export default function Dashboard() {
                 ))}
             </div>
 
-            {/* ================= CHARTS SECTION ================= */}
+            {/* CHARTS SECTION */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-zinc-200/60 shadow-[0_2px_12px_rgba(0,0,0,0.01)]">
                     <div className="flex justify-between items-center mb-6">
@@ -176,8 +174,8 @@ export default function Dashboard() {
                             </PieChart>
                         </ResponsiveContainer>
                         <div className="absolute text-center">
-                            <p className="text-2xl font-black text-zinc-800">Gentle</p>
-                            <p className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Cut Lab</p>
+                            <p className="text-2xl font-black text-zinc-800">Crown</p>
+                            <p className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">& Co.</p>
                         </div>
                     </div>
                     <div className="grid grid-cols-3 gap-2 pt-2 border-t border-zinc-100 text-[11px] font-medium text-zinc-500">
@@ -194,12 +192,12 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* ================= TABEL DATA CUSTOMER DENGAN SEARCH BAR ================= */}
+            {/* TABEL DATA CUSTOMER */}
             <div className="bg-white rounded-2xl border border-zinc-200/60 shadow-[0_2px_12px_rgba(0,0,0,0.01)] overflow-hidden">
                 <div className="p-6 border-b border-zinc-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                        <h3 className="font-bold text-zinc-800 text-sm tracking-tight">Data Pelanggan Terbaru (CRM Database)</h3>
-                        <p className="text-xs text-zinc-400 mt-0.5">Sinkronisasi data langsung dengan lembar spreadsheet utama GentleCut</p>
+                        <h3 className="font-bold text-zinc-800 text-sm tracking-tight">Data Pelanggan Terbaru (Crown&Co. Database)</h3>
+                        <p className="text-xs text-zinc-400 mt-0.5">Data pelanggan Crown&Co. Barbershop</p>
                     </div>
                     
                     <div className="relative w-full sm:w-64">
@@ -258,7 +256,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* ================= TAMBAHAN: DAFTAR USER TERBARU DARI SUPABASE ================= */}
+            {/* DAFTAR USER TERBARU */}
             <div className="bg-white rounded-2xl border border-zinc-200/60 shadow-[0_2px_12px_rgba(0,0,0,0.01)] overflow-hidden">
                 <div className="p-6 border-b border-zinc-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
