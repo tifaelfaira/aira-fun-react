@@ -1,7 +1,7 @@
 import Card from "./Card";
 import Badge from "./Badge";
 
-export default function ProductCard({ image, title, category, price, description }) {
+export default function ProductCard({ image, title, category, price, description, onDetailClick }) {
   return (
     <Card className="overflow-hidden !p-0">
       <img
@@ -27,7 +27,10 @@ export default function ProductCard({ image, title, category, price, description
           <h3 className="text-xl font-extrabold text-blue-600">
             {price}
           </h3>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors shadow-sm">
+          <button 
+            onClick={onDetailClick}
+            className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors shadow-sm"
+          >
             Detail
           </button>
         </div>

@@ -6,6 +6,13 @@ import products from "../data/Products.json";
 export default function Products() {
   const [hoveredId, setHoveredId] = useState(null);
 
+  // ================= TAMBAHAN: FUNGSI UNTUK DETAIL PRODUCT =================
+  const handleDetailClick = (productId) => {
+    // Redirect ke halaman detail produk
+    window.location.href = `/products/${productId}`;
+  };
+  // ========================================================================
+
   return (
     <div className="p-8 bg-gradient-to-br from-amber-50/30 via-white to-amber-50/20 min-h-screen">
       
@@ -66,7 +73,10 @@ export default function Products() {
 
               {/* Hover effect overlay */}
               <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-center pb-5 gap-3 ${hoveredId === product.id ? 'opacity-100' : ''}`}>
-                <button className="bg-amber-500 hover:bg-amber-600 text-white p-2 rounded-full transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
+                <button 
+                  onClick={() => handleDetailClick(product.id)}
+                  className="bg-amber-500 hover:bg-amber-600 text-white p-2 rounded-full transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 shadow-lg"
+                >
                   <FiEye className="text-sm" />
                 </button>
                 <button className="bg-white/90 hover:bg-amber-500 text-neutral-700 hover:text-white p-2 rounded-full transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
@@ -118,13 +128,13 @@ export default function Products() {
                 </div>
               </div>
 
-              {/* Quick Add Button ala Korea */}
-              <Link
-                to={`/products/${product.id}`}
-                className="mt-4 w-full block bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black text-[10px] uppercase tracking-wider py-2.5 rounded-xl transition-all text-center shadow-md hover:shadow-lg"
+              {/* Quick Add Button ala Korea - SUDAH BERFUNGSI */}
+              <button
+                onClick={() => handleDetailClick(product.id)}
+                className="mt-4 w-full block bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black text-[10px] uppercase tracking-wider py-2.5 rounded-xl transition-all text-center shadow-md hover:shadow-lg cursor-pointer"
               >
                 ✧ DETAIL PRODUCT ✧
-              </Link>
+              </button>
             </div>
           </div>
         ))}

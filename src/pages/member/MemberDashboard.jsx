@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   IoCutOutline, IoCalendarOutline, IoGiftOutline, 
   IoWalletOutline, IoStar, IoLogOutOutline, 
@@ -11,10 +11,38 @@ import {
 } from "react-icons/io5";
 
 export default function MemberDashboard() {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState("Reguler");
   const [currentLevel, setCurrentLevel] = useState("Reguler");
   const [isLoading, setIsLoading] = useState(false);
+  
+  // STATE UNTUK DATA MEMBER
+  const [memberName, setMemberName] = useState("Member");
+  const [memberMembership, setMemberMembership] = useState("Regular");
+  const [memberData, setMemberData] = useState({
+    totalBooking: 0,
+    totalPoints: 0,
+    totalSpent: 0,
+  });
+
+  // AMBIL DATA DARI LOCALSTORAGE
+  useEffect(() => {
+    const savedData = localStorage.getItem("memberData");
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        setMemberName(parsed.fullName || "Member");
+        setMemberMembership(parsed.membership || "Regular");
+        setMemberData({
+          totalBooking: parsed.totalBooking || 0,
+          totalPoints: parsed.totalPoints || 0,
+          totalSpent: parsed.totalSpent || 0,
+        });
+        setCurrentLevel(parsed.membership || "Reguler");
+      } catch (e) {}
+    }
+  }, []);
 
   // Data paket membership
   const membershipPackages = [
@@ -82,13 +110,22 @@ export default function MemberDashboard() {
   ];
 
   const handleUpgrade = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsModalOpen(false);
-      setCurrentLevel(selectedPackage);
-      alert(`🎉 Selamat! Anda berhasil upgrade ke paket ${selectedPackage}!`);
-    }, 1500);
+    setIsModalOpen(false);
+    navigate(`/member/upgrade?package=${selectedPackage}`);
+  };
+
+  // LOGOUT
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    navigate("/");
+  };
+
+  // BADGE MEMBERSHIP
+  const membershipBadge = {
+    Regular: "bg-gray-500",
+    Silver: "bg-gray-400",
+    Gold: "bg-yellow-500",
+    Premium: "bg-purple-500",
   };
 
   return (
@@ -107,9 +144,14 @@ export default function MemberDashboard() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-3xl md:text-4xl font-black text-neutral-900">
-              Hai, <span className="text-amber-500">Member!</span>
+              Hai, <span className="text-amber-500">{memberName}!</span> {/* <-- NAMA MEMBER */}
             </h1>
-            <p className="text-neutral-400 text-sm mt-1">Selamat datang di dashboard member Crown&Co.</p>
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-neutral-400 text-sm">Selamat datang di dashboard member Crown&Co.</p>
+              <span className={`px-3 py-0.5 rounded-full text-xs font-bold text-white ${membershipBadge[memberMembership] || 'bg-gray-500'}`}>
+                {memberMembership}
+              </span>
+            </div>
           </div>
           <button 
             onClick={() => setIsModalOpen(true)}
@@ -121,59 +163,56 @@ export default function MemberDashboard() {
         </div>
       </div>
 
-      {/* Card Stats */}
+      {/* Card Stats - PAKE DATA DARI LOCALSTORAGE */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {[
-          { label: "Total Booking", value: "8", icon: <IoCalendarOutline />, color: "amber" },
-          { label: "Poin Saya", value: "1.250", icon: <IoStar />, color: "blue" },
-          { label: "Voucher", value: "2", icon: <IoGiftOutline />, color: "green" },
-          { label: "Total Belanja", value: "Rp 850K", icon: <IoWalletOutline />, color: "purple" },
-        ].map((stat, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: idx * 0.1 }}
-            whileHover={{ y: -5, scale: 1.02 }}
-            className={`bg-white rounded-2xl p-5 shadow-sm border border-${stat.color === 'amber' ? 'amber' : stat.color === 'blue' ? 'blue' : stat.color === 'green' ? 'emerald' : 'purple'}-100`}
-          >
-            <div className={`text-${stat.color === 'amber' ? 'amber' : stat.color === 'blue' ? 'blue' : stat.color === 'green' ? 'emerald' : 'purple'}-500 text-2xl mb-2`}>
-              {stat.icon}
-            </div>
-            <p className="text-sm text-neutral-500">{stat.label}</p>
-            <p className="text-2xl font-black text-neutral-900">{stat.value}</p>
-          </motion.div>
-        ))}
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-amber-100">
+          <IoCalendarOutline className="text-amber-500 text-2xl mb-2" />
+          <p className="text-sm text-neutral-500">Total Booking</p>
+          <p className="text-2xl font-black text-neutral-900">{memberData.totalBooking}</p>
+        </div>
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-blue-100">
+          <IoStar className="text-blue-500 text-2xl mb-2" />
+          <p className="text-sm text-neutral-500">Poin Saya</p>
+          <p className="text-2xl font-black text-neutral-900">{memberData.totalPoints}</p>
+        </div>
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-green-100">
+          <IoGiftOutline className="text-green-500 text-2xl mb-2" />
+          <p className="text-sm text-neutral-500">Voucher</p>
+          <p className="text-2xl font-black text-neutral-900">2</p>
+        </div>
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-purple-100">
+          <IoWalletOutline className="text-purple-500 text-2xl mb-2" />
+          <p className="text-sm text-neutral-500">Total Belanja</p>
+          <p className="text-2xl font-black text-neutral-900">Rp {(memberData.totalSpent / 1000).toFixed(0)}K</p>
+        </div>
       </div>
 
       {/* Menu Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {[
-          { label: "Profil Saya", icon: <IoPersonOutline />, path: "/member/profile" },
-          { label: "Riwayat Booking", icon: <IoTimeOutline />, path: "/member/history" },
-          { label: "Voucher Saya", icon: <IoGiftOutline />, path: "/member/voucher" },
-          { label: "Logout", icon: <IoLogOutOutline />, path: "/" },
-        ].map((menu, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: 0.4 + idx * 0.1 }}
-            whileHover={{ scale: 1.05 }}
-          >
-            <Link
-              to={menu.path}
-              className="bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-md hover:border-amber-200 transition-all block group"
-            >
-              <div className="text-amber-500 text-3xl mb-2 group-hover:scale-110 transition-transform">
-                {menu.icon}
-              </div>
-              <span className="text-sm font-bold text-neutral-700 group-hover:text-amber-600 transition-colors">
-                {menu.label}
-              </span>
-            </Link>
-          </motion.div>
-        ))}
+        <Link to="/member/profile" className="bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-md hover:border-amber-200 transition-all block group">
+          <div className="text-amber-500 text-3xl mb-2 group-hover:scale-110 transition-transform">
+            <IoPersonOutline />
+          </div>
+          <span className="text-sm font-bold text-neutral-700 group-hover:text-amber-600 transition-colors">Profil Saya</span>
+        </Link>
+        <Link to="/member/history" className="bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-md hover:border-amber-200 transition-all block group">
+          <div className="text-amber-500 text-3xl mb-2 group-hover:scale-110 transition-transform">
+            <IoTimeOutline />
+          </div>
+          <span className="text-sm font-bold text-neutral-700 group-hover:text-amber-600 transition-colors">Riwayat Booking</span>
+        </Link>
+        <Link to="/member/voucher" className="bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-md hover:border-amber-200 transition-all block group">
+          <div className="text-amber-500 text-3xl mb-2 group-hover:scale-110 transition-transform">
+            <IoGiftOutline />
+          </div>
+          <span className="text-sm font-bold text-neutral-700 group-hover:text-amber-600 transition-colors">Voucher Saya</span>
+        </Link>
+        <button onClick={handleLogout} className="bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-md hover:border-red-200 transition-all block group">
+          <div className="text-red-400 text-3xl mb-2 group-hover:scale-110 transition-transform">
+            <IoLogOutOutline />
+          </div>
+          <span className="text-sm font-bold text-neutral-700 group-hover:text-red-500 transition-colors">Logout</span>
+        </button>
       </div>
 
       {/* Recent Booking */}
@@ -328,17 +367,10 @@ export default function MemberDashboard() {
               disabled={isLoading}
               className="w-full mt-6 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black py-3.5 rounded-xl transition-all shadow-lg shadow-amber-500/30 text-sm uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                  Memproses...
-                </>
-              ) : (
-                <>
-                  <IoSparklesOutline className="text-lg" />
-                  Konfirmasi Upgrade ke {selectedPackage}
-                </>
-              )}
+              <>
+                <IoSparklesOutline className="text-lg" />
+                Konfirmasi Upgrade ke {selectedPackage}
+              </>
             </button>
 
             <p className="text-center text-[9px] text-neutral-400 mt-3">

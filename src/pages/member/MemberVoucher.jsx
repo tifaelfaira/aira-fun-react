@@ -24,10 +24,11 @@ export default function MemberVoucher() {
       return;
     }
 
-    // Klaim voucher via WhatsApp
+    // Klaim voucher via WhatsApp - NOMOR UDAH DIGANTI JADI 081266903256
     const message = `Halo%20Crown%26Co.%0A%0A*KLAIM%20VOUCHER%20MEMBER*%0A%0ASaya%20mau%20klaim%20voucher%3A%0A📌%20${encodeURIComponent(voucher.title)}%0A📌%20Kode%3A%20${voucher.code}%0A📌%20Diskon%3A%20${voucher.discount}%0A%0ATerima%20kasih!`;
     
-    window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
+    // ====== NOMOR WA DIGANTI JADI 081266903256 ======
+    window.open(`https://wa.me/6281266903256?text=${message}`, '_blank');
     
     // Tandai sebagai sudah di-claim
     setClaimedVouchers([...claimedVouchers, voucher.id]);

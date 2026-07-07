@@ -7,8 +7,71 @@ import Card from "../components/Card";
 import ProductCard from "../components/ProductCard";
 import Table from "../components/Table";
 import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function Components() {
+  const navigate = useNavigate();
+
+  // ================= STATE UNTUK FORM ANTREAN =================
+  const [formData, setFormData] = useState({
+    name: "",
+    cepster: "Kak Jun (Ready)",
+    notes: ""
+  });
+
+  const [antreanList, setAntreanList] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
+  // ================= FUNGSI HANDLE FORM =================
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleAddAntrean = (e) => {
+    e.preventDefault();
+    
+    if (!formData.name.trim()) {
+      setAlertMessage("⚠️ Nama pelanggan harus diisi!");
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 3000);
+      return;
+    }
+
+    const newAntrean = {
+      id: antreanList.length + 1,
+      name: formData.name,
+      cepster: formData.cepster,
+      notes: formData.notes || "-",
+      time: new Date().toLocaleString('id-ID'),
+      status: "Antre"
+    };
+
+    setAntreanList([...antreanList, newAntrean]);
+    setAlertMessage(`✅ "${formData.name}" berhasil masuk antrean!`);
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 3000);
+    
+    // Reset form
+    setFormData({
+      name: "",
+      cepster: "Kak Jun (Ready)",
+      notes: ""
+    });
+  };
+
+  // ================= FUNGSI DETAIL PRODUK =================
+  const handleProductDetail = (title) => {
+    const productMap = {
+      "Crown Matte Clay Pomade": 1,
+      "K-Treatment Scalp Therapy": 4
+    };
+    const productId = productMap[title] || 1;
+    navigate(`/products/${productId}`);
+  };
+
   // Data Header Tabel Layanan Barbershop Crown&Co.
   const headers = ["No", "Nama Pelanggan", "Layanan", "Cepster", "Status", "Total Harga"];
 
@@ -31,6 +94,15 @@ export default function Components() {
           Crown&Co. CRM / Master Components
         </p>
       </div>
+
+      {/* ===== ALERT NOTIFICATION ===== */}
+      {showAlert && (
+        <div className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-2xl shadow-lg text-sm font-bold transition-all ${
+          alertMessage.includes("✅") ? "bg-green-100 text-green-700 border border-green-300" : "bg-red-100 text-red-700 border border-red-300"
+        }`}>
+          {alertMessage}
+        </div>
+      )}
 
       {/* 1. BASIC COMPONENTS */}
       <div className="space-y-4">
@@ -79,6 +151,7 @@ export default function Components() {
               category="Hair Styling Produk"
               price="Rp 120.000"
               description="Pomade matte finish dengan hold kuat seharian. Mudah dicuci dan tidak meninggalkan residu. Wangi kayu sandal yang maskulin."
+              onDetailClick={() => handleProductDetail("Crown Matte Clay Pomade")}
             />
           </div>
           <div className="bg-amber-50/40 border border-amber-200 rounded-2xl p-2 shadow-sm">
@@ -88,6 +161,7 @@ export default function Components() {
               category="Paket Layanan Utama"
               price="Rp 130.000"
               description="Sesi detoks mendalam membersihkan kulit kepala dari ketombe dan minyak berlebih, disusul masker keratin pelindung akar."
+              onDetailClick={() => handleProductDetail("K-Treatment Scalp Therapy")}
             />
           </div>
         </div>
@@ -118,16 +192,29 @@ export default function Components() {
         </div>
       </div>
 
-      {/* 4. FORM COMPONENT */}
+      {/* 4. FORM COMPONENT - UDAH BISA DIKLIK */}
       <div className="space-y-4">
-        <div className="bg-amber-50/50 p-6 rounded-xl border border-amber-200 space-y-4 shadow-sm max-w-2xl">
+        <form onSubmit={handleAddAntrean} className="bg-amber-50/50 p-6 rounded-xl border border-amber-200 space-y-4 shadow-sm max-w-2xl">
           <div>
             <label className="block text-sm font-semibold text-zinc-800 mb-1">Nama Pelanggan</label>
-            <input type="text" className="w-full border border-amber-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#F5B301] bg-white" placeholder="Contoh: Mas Budi..." />
+            <input 
+              type="text" 
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              className="w-full border border-amber-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#F5B301] bg-white" 
+              placeholder="Contoh: Mas Budi..." 
+              required
+            />
           </div>
           <div>
             <label className="block text-sm font-semibold text-zinc-800 mb-1">Pilih Cepster Tersedia</label>
-            <select className="w-full border border-amber-300 rounded-lg p-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#F5B301]">
+            <select 
+              name="cepster"
+              value={formData.cepster}
+              onChange={handleInputChange}
+              className="w-full border border-amber-300 rounded-lg p-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#F5B301]"
+            >
               <option>Kak Jun (Ready)</option>
               <option>Kak Mina (Ready)</option>
               <option>Kak Rizky (Istirahat)</option>
@@ -136,14 +223,24 @@ export default function Components() {
           </div>
           <div>
             <label className="block text-sm font-semibold text-zinc-800 mb-1">Catatan Permintaan Khusus</label>
-            <textarea className="w-full border border-amber-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#F5B301] bg-white" rows="2" placeholder="Misal: Korean Layered Cut, fade di samping..."></textarea>
+            <textarea 
+              name="notes"
+              value={formData.notes}
+              onChange={handleInputChange}
+              className="w-full border border-amber-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#F5B301] bg-white" 
+              rows="2" 
+              placeholder="Misal: Korean Layered Cut, fade di samping..."
+            />
           </div>
           <div className="pt-2">
-            <button type="button" className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition-all shadow-md active:scale-95 w-full md:w-auto">
+            <button 
+              type="submit"
+              className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition-all shadow-md active:scale-95 w-full md:w-auto"
+            >
               Masukkan ke Daftar Antrean
             </button>
           </div>
-        </div>
+        </form>
       </div>
 
       {/* 5. FEEDBACK COMPONENT */}
@@ -185,6 +282,26 @@ export default function Components() {
 
       {/* LAYOUT COMPONENT - FOOTER SYSTEM */}
       <Footer />
+
+      {/* ===== DAFTAR ANTREAN ===== */}
+      {antreanList.length > 0 && (
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-amber-200">
+          <h3 className="font-bold text-zinc-800 mb-3">📋 Daftar Antrean Baru</h3>
+          <div className="space-y-2">
+            {antreanList.map((item) => (
+              <div key={item.id} className="flex justify-between items-center p-2 bg-amber-50 rounded-lg border border-amber-100">
+                <div>
+                  <p className="font-bold text-zinc-800">{item.name}</p>
+                  <p className="text-xs text-zinc-500">{item.cepster} • {item.time}</p>
+                </div>
+                <span className="text-xs font-bold px-2 py-1 bg-amber-500 text-white rounded-full">
+                  {item.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </Container>
   );
 }

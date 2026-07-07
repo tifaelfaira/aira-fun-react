@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom"; // <-- TAMBAHKAN useNavigate
 import {
   FiGrid,
   FiShoppingCart,
@@ -10,7 +10,11 @@ import {
   FiPackage,
   FiLayers,
   FiScissors,
-  FiUserPlus, // <-- TAMBAHKAN INI
+  FiUserPlus,
+  FiAward,
+  FiImage,
+  FiCalendar,
+  FiTag,
 } from "react-icons/fi";
 
 // LOGO PERSIS (Tetap utuh gak gua utak-atik)
@@ -35,17 +39,29 @@ function RealBarbershopChair() {
 
 export default function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate(); // <-- TAMBAHKAN INI
 
   const menus = [
-    { name: "Overview", path: "/", icon: <FiGrid /> },
+    { name: "Overview", path: "/dashboard", icon: <FiGrid /> },
     { name: "Customers", path: "/customers", icon: <FiUsers /> },
     { name: "Orders", path: "/orders", icon: <FiShoppingCart /> },
     { name: "Products", path: "/products", icon: <FiPackage /> },
     { name: "Components", path: "/components", icon: <FiLayers /> },
     { name: "Treatments", path: "/treatments", icon: <FiScissors /> },
-    { name: "Users", path: "/users", icon: <FiUserPlus /> }, // <-- TAMBAHKAN INI
-    { name: "Settings", path: "/settings", icon: <FiSettings /> },
+    { name: "Users", path: "/users", icon: <FiUserPlus /> },
+    { name: "Capster", path: "/capster", icon: <FiAward /> },
+    { name: "Gallery", path: "/gallery", icon: <FiImage /> },
+    { name: "Appointments", path: "/appointments", icon: <FiCalendar /> },
+    { name: "Promotions", path: "/promotions", icon: <FiTag /> },
   ];
+
+  // FUNGSI LOGOUT
+  const handleLogout = () => {
+    // Hapus data login dari localStorage
+    localStorage.removeItem("isLoggedIn");
+    // Arahkan ke halaman guest
+    navigate("/");
+  };
 
   return (
     <div className="w-64 min-h-screen bg-black px-5 py-6 flex flex-col">
@@ -140,6 +156,7 @@ export default function Sidebar() {
       {/* LOGOUT */}
       <div className="pt-6 border-t border-[#050505]">
         <button
+          onClick={handleLogout} // <-- TAMBAHKAN INI
           className="
             w-full
             flex items-center gap-3

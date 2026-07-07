@@ -20,6 +20,10 @@ const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const Components = lazy(() => import("./pages/Components")); 
 const Treatments = lazy(() => import("./pages/Treatments")); 
 const Users = lazy(() => import("./pages/Users"));
+const Capster = lazy(() => import("./pages/Capster"));
+const Gallery = lazy(() => import("./pages/Gallery"));
+const Appointments = lazy(() => import("./pages/Appointments"));
+const Promotions = lazy(() => import("./pages/Promotions"));
 
 const Guest = lazy(() => import("./pages/Guest"));
 
@@ -29,7 +33,8 @@ const MemberRegister = lazy(() => import("./pages/member/MemberRegister"));
 const MemberDashboard = lazy(() => import("./pages/member/MemberDashboard"));
 const MemberProfile = lazy(() => import("./pages/member/MemberProfile"));
 const MemberHistory = lazy(() => import("./pages/member/MemberHistory"));
-const MemberVoucher = lazy(() => import("./pages/member/MemberVoucher")); // <-- TAMBAHKAN
+const MemberVoucher = lazy(() => import("./pages/member/MemberVoucher"));
+const MemberUpgrade = lazy(() => import("./pages/member/MemberUpgrade")); // <-- TAMBAHKAN
 // =================================================
 
 function App() {
@@ -57,6 +62,10 @@ function App() {
           <Route path="/components" element={<Components />} /> 
           <Route path="/treatments" element={<Treatments />} /> 
           <Route path="/users" element={<Users />} />
+          <Route path="/capster" element={<Capster />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/appointments" element={<Appointments />} />
+          <Route path="/promotions" element={<Promotions />} />
 
           <Route 
             path="/error-400" 
@@ -85,7 +94,8 @@ function App() {
           <Route path="/member/dashboard" element={<MemberDashboard />} />
           <Route path="/member/profile" element={<MemberProfile />} />
           <Route path="/member/history" element={<MemberHistory />} />
-          <Route path="/member/voucher" element={<MemberVoucher />} /> {/* <-- TAMBAHKAN */}
+          <Route path="/member/voucher" element={<MemberVoucher />} />
+          <Route path="/member/upgrade" element={<MemberUpgrade />} /> {/* <-- TAMBAHKAN */}
           {/* ================================================ */}
         </Route>
       </Routes>

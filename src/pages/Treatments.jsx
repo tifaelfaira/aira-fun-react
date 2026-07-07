@@ -32,11 +32,139 @@ const initialTreatments = [
 
 export default function Treatments() {
   const [filterCategory, setFilterCategory] = useState("All");
+  const [treatments, setTreatments] = useState(initialTreatments);
+
+  // ================= TAMBAHAN: STATE UNTUK CRUD =================
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedTreatment, setSelectedTreatment] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    category: "Haircut",
+    duration: "",
+    description: "",
+    price: "",
+    available: true
+  });
+
+  // ================= FUNGSI CRUD =================
+
+  // Generate ID baru
+  const generateId = () => {
+    const lastId = treatments[treatments.length - 1]?.id || "TRT-0000";
+    const num = parseInt(lastId.split("-")[1]) + 1;
+    return `TRT-${String(num).padStart(4, '0')}`;
+  };
+
+  // Tambah treatment baru
+  const handleAddTreatment = (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.duration || !formData.price) {
+      alert("⚠️ Nama, Durasi, dan Harga wajib diisi!");
+      return;
+    }
+
+    const newTreatment = {
+      id: generateId(),
+      name: formData.name,
+      category: formData.category,
+      duration: formData.duration,
+      description: formData.description || "-",
+      price: formData.price,
+      available: formData.available
+    };
+
+    setTreatments([...treatments, newTreatment]);
+    setIsAddModalOpen(false);
+    resetForm();
+    alert(`✅ Layanan "${formData.name}" berhasil ditambahkan!`);
+  };
+
+  // Edit treatment
+  const handleEditTreatment = (treatment) => {
+    setSelectedTreatment(treatment);
+    setFormData({
+      name: treatment.name,
+      category: treatment.category,
+      duration: treatment.duration,
+      description: treatment.description,
+      price: treatment.price,
+      available: treatment.available
+    });
+    setIsEditModalOpen(true);
+  };
+
+  // Save edit
+  const handleSaveEdit = (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.duration || !formData.price) {
+      alert("⚠️ Nama, Durasi, dan Harga wajib diisi!");
+      return;
+    }
+
+    const updatedTreatments = treatments.map(t => 
+      t.id === selectedTreatment.id 
+        ? {
+            ...t,
+            name: formData.name,
+            category: formData.category,
+            duration: formData.duration,
+            description: formData.description || "-",
+            price: formData.price,
+            available: formData.available
+          }
+        : t
+    );
+    
+    setTreatments(updatedTreatments);
+    setIsEditModalOpen(false);
+    setSelectedTreatment(null);
+    resetForm();
+    alert(`✅ Layanan "${formData.name}" berhasil diupdate!`);
+  };
+
+  // Hapus treatment
+  const handleDeleteTreatment = (treatment) => {
+    if (window.confirm(`Yakin ingin menghapus layanan "${treatment.name}"?`)) {
+      const newTreatments = treatments.filter(t => t.id !== treatment.id);
+      setTreatments(newTreatments);
+      alert(`✅ Layanan "${treatment.name}" berhasil dihapus!`);
+    }
+  };
+
+  // Toggle status (Switch)
+  const handleToggleStatus = (treatmentId) => {
+    const updatedTreatments = treatments.map(t =>
+      t.id === treatmentId ? { ...t, available: !t.available } : t
+    );
+    setTreatments(updatedTreatments);
+  };
+
+  // View detail
+  const handleViewDetail = (treatment) => {
+    setSelectedTreatment(treatment);
+    setIsDetailModalOpen(true);
+  };
+
+  // Reset form
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      category: "Haircut",
+      duration: "",
+      description: "",
+      price: "",
+      available: true
+    });
+  };
+
+  // ======================================================
 
   // Logika filter kategori
   const filteredTreatments = filterCategory === "All"
-    ? initialTreatments
-    : initialTreatments.filter(t => t.category === filterCategory);
+    ? treatments
+    : treatments.filter(t => t.category === filterCategory);
 
   return (
     <div className="p-6 space-y-6 bg-slate-50 min-h-screen">
@@ -50,7 +178,7 @@ export default function Treatments() {
 
         {/* 1. COMPONENT SHADCN UI: DIALOG */}
         <div className="mt-4 md:mt-0">
-          <Dialog>
+          <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
             <DialogTrigger className="bg-amber-500 text-white font-medium px-4 py-2 rounded-lg hover:bg-amber-600 transition text-sm shadow-sm">
               + Tambah Perawatan
             </DialogTrigger>
@@ -61,24 +189,87 @@ export default function Treatments() {
                   Masukkan paket treatment baru ke dalam database sistem CRM GentleCut Barber.
                 </DialogDescription>
               </DialogHeader>
-              <div className="space-y-4 py-4 text-sm">
+              <form onSubmit={handleAddTreatment} className="space-y-4 py-4 text-sm">
                 <div className="flex flex-col gap-1">
                   <label className="font-semibold text-slate-700">Nama Layanan</label>
-                  <input type="text" placeholder="Contoh: Creambath Premium" className="border p-2 rounded-md outline-none" />
+                  <input 
+                    type="text" 
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    placeholder="Contoh: Creambath Premium" 
+                    className="border p-2 rounded-md outline-none focus:ring-2 focus:ring-amber-500" 
+                    required
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="font-semibold text-slate-700">Kategori</label>
+                  <select 
+                    value={formData.category}
+                    onChange={(e) => setFormData({...formData, category: e.target.value})}
+                    className="border p-2 rounded-md outline-none focus:ring-2 focus:ring-amber-500"
+                  >
+                    <option value="Haircut">Haircut</option>
+                    <option value="Shaving">Shaving</option>
+                    <option value="Coloring">Coloring</option>
+                    <option value="Treatment">Treatment</option>
+                    <option value="Styling">Styling</option>
+                  </select>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="font-semibold text-slate-700">Durasi Perawatan</label>
-                  <input type="text" placeholder="Contoh: 45 Menit" className="border p-2 rounded-md outline-none" />
+                  <input 
+                    type="text" 
+                    value={formData.duration}
+                    onChange={(e) => setFormData({...formData, duration: e.target.value})}
+                    placeholder="Contoh: 45 Menit" 
+                    className="border p-2 rounded-md outline-none focus:ring-2 focus:ring-amber-500" 
+                    required
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="font-semibold text-slate-700">Deskripsi</label>
+                  <input 
+                    type="text" 
+                    value={formData.description}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    placeholder="Deskripsi singkat layanan" 
+                    className="border p-2 rounded-md outline-none focus:ring-2 focus:ring-amber-500" 
+                  />
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="font-semibold text-slate-700">Tarif Harga (Rp)</label>
-                  <input type="text" placeholder="Contoh: Rp 85.000" className="border p-2 rounded-md outline-none" />
+                  <input 
+                    type="text" 
+                    value={formData.price}
+                    onChange={(e) => setFormData({...formData, price: e.target.value})}
+                    placeholder="Contoh: Rp 85.000" 
+                    className="border p-2 rounded-md outline-none focus:ring-2 focus:ring-amber-500" 
+                    required
+                  />
                 </div>
-              </div>
-              <div className="flex justify-end gap-2">
-                <button className="px-4 py-2 border rounded-md text-sm hover:bg-slate-100">Batal</button>
-                <button className="px-4 py-2 bg-amber-500 text-white rounded-md text-sm hover:bg-amber-600">Simpan Paket</button>
-              </div>
+                <div className="flex items-center gap-3">
+                  <label className="font-semibold text-slate-700">Aktif</label>
+                  <Switch 
+                    checked={formData.available}
+                    onCheckedChange={(checked) => setFormData({...formData, available: checked})}
+                  />
+                </div>
+                <div className="flex justify-end gap-2 pt-2">
+                  <button 
+                    type="button" 
+                    onClick={() => { setIsAddModalOpen(false); resetForm(); }}
+                    className="px-4 py-2 border rounded-md text-sm hover:bg-slate-100"
+                  >
+                    Batal
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="px-4 py-2 bg-amber-500 text-white rounded-md text-sm hover:bg-amber-600"
+                  >
+                    Simpan Paket
+                  </button>
+                </div>
+              </form>
             </DialogContent>
           </Dialog>
         </div>
@@ -142,19 +333,41 @@ export default function Treatments() {
                 {/* 3. COMPONENT SHADCN UI: SWITCH */}
                 <td className="p-4">
                   <div className="flex flex-col items-center justify-center gap-1">
-                    <Switch id={`toggle-${treatment.id}`} defaultChecked={treatment.available} />
+                    <Switch 
+                      id={`toggle-${treatment.id}`} 
+                      checked={treatment.available}
+                      onCheckedChange={() => handleToggleStatus(treatment.id)}
+                    />
                     <span className={`text-[10px] font-bold uppercase ${treatment.available ? "text-emerald-600" : "text-rose-500"}`}>
                       {treatment.available ? "Aktif" : "Tutup"}
                     </span>
                   </div>
                 </td>
 
-                {/* KOLOM AKSI  */}
+                {/* KOLOM AKSI - SUDAH BERFUNGSI */}
                 <td className="p-4">
                   <div className="flex items-center justify-center gap-2 text-base">
-                    <button className="text-blue-500 hover:text-blue-700 cursor-pointer" title="Lihat">👁</button>
-                    <button className="text-amber-500 hover:text-amber-700 cursor-pointer" title="Edit">📝</button>
-                    <button className="text-rose-500 hover:text-rose-700 cursor-pointer" title="Hapus">🗑</button>
+                    <button 
+                      onClick={() => handleViewDetail(treatment)}
+                      className="text-blue-500 hover:text-blue-700 cursor-pointer transition-colors" 
+                      title="Lihat Detail"
+                    >
+                      👁
+                    </button>
+                    <button 
+                      onClick={() => handleEditTreatment(treatment)}
+                      className="text-amber-500 hover:text-amber-700 cursor-pointer transition-colors" 
+                      title="Edit"
+                    >
+                      📝
+                    </button>
+                    <button 
+                      onClick={() => handleDeleteTreatment(treatment)}
+                      className="text-rose-500 hover:text-rose-700 cursor-pointer transition-colors" 
+                      title="Hapus"
+                    >
+                      🗑
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -163,6 +376,153 @@ export default function Treatments() {
         </table>
       </div>
 
+      {/* ===== MODAL DETAIL ===== */}
+      {isDetailModalOpen && selectedTreatment && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-black text-neutral-900">Detail Layanan</h2>
+              <button 
+                onClick={() => { setIsDetailModalOpen(false); setSelectedTreatment(null); }}
+                className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-full"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-zinc-50 p-3 rounded-xl col-span-2">
+                  <p className="text-[9px] font-black text-zinc-400 uppercase tracking-wider">ID Layanan</p>
+                  <p className="font-bold text-amber-600">{selectedTreatment.id}</p>
+                </div>
+                <div className="bg-zinc-50 p-3 rounded-xl col-span-2">
+                  <p className="text-[9px] font-black text-zinc-400 uppercase tracking-wider">Nama Paket</p>
+                  <p className="font-bold text-zinc-800">{selectedTreatment.name}</p>
+                </div>
+                <div className="bg-zinc-50 p-3 rounded-xl">
+                  <p className="text-[9px] font-black text-zinc-400 uppercase tracking-wider">Kategori</p>
+                  <p className="text-zinc-700">{selectedTreatment.category}</p>
+                </div>
+                <div className="bg-zinc-50 p-3 rounded-xl">
+                  <p className="text-[9px] font-black text-zinc-400 uppercase tracking-wider">Durasi</p>
+                  <p className="text-zinc-700">{selectedTreatment.duration}</p>
+                </div>
+                <div className="bg-zinc-50 p-3 rounded-xl col-span-2">
+                  <p className="text-[9px] font-black text-zinc-400 uppercase tracking-wider">Deskripsi</p>
+                  <p className="text-zinc-600">{selectedTreatment.description}</p>
+                </div>
+                <div className="bg-zinc-50 p-3 rounded-xl">
+                  <p className="text-[9px] font-black text-zinc-400 uppercase tracking-wider">Harga</p>
+                  <p className="font-bold text-zinc-900 text-lg">{selectedTreatment.price}</p>
+                </div>
+                <div className="bg-zinc-50 p-3 rounded-xl">
+                  <p className="text-[9px] font-black text-zinc-400 uppercase tracking-wider">Status</p>
+                  <p className={`font-bold ${selectedTreatment.available ? "text-emerald-600" : "text-rose-500"}`}>
+                    {selectedTreatment.available ? "Aktif" : "Tutup"}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex gap-3 mt-6">
+              <button 
+                onClick={() => { setIsDetailModalOpen(false); setSelectedTreatment(null); }}
+                className="flex-1 bg-zinc-900 hover:bg-black text-white font-black py-3 rounded-xl transition-all text-sm"
+              >
+                Tutup
+              </button>
+              <button 
+                onClick={() => { handleEditTreatment(selectedTreatment); setIsDetailModalOpen(false); }}
+                className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 rounded-xl transition-all text-sm"
+              >
+                📝 Edit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== MODAL EDIT ===== */}
+      {isEditModalOpen && selectedTreatment && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
+          <div className="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl relative mx-4">
+            <button 
+              onClick={() => { setIsEditModalOpen(false); setSelectedTreatment(null); resetForm(); }} 
+              className="absolute top-6 right-6 text-zinc-400 hover:text-zinc-600 transition-colors"
+            >
+              ✕
+            </button>
+            <h3 className="text-xl font-black text-zinc-900 mb-6">Edit Layanan</h3>
+            
+            <form onSubmit={handleSaveEdit} className="space-y-4">
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block mb-1">Nama Layanan</label>
+                <input 
+                  type="text" 
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  className="w-full p-3.5 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-amber-500 transition-all" 
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block mb-1">Kategori</label>
+                <select 
+                  value={formData.category}
+                  onChange={(e) => setFormData({...formData, category: e.target.value})}
+                  className="w-full p-3.5 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-amber-500 transition-all"
+                >
+                  <option value="Haircut">Haircut</option>
+                  <option value="Shaving">Shaving</option>
+                  <option value="Coloring">Coloring</option>
+                  <option value="Treatment">Treatment</option>
+                  <option value="Styling">Styling</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block mb-1">Durasi</label>
+                <input 
+                  type="text" 
+                  value={formData.duration}
+                  onChange={(e) => setFormData({...formData, duration: e.target.value})}
+                  className="w-full p-3.5 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-amber-500 transition-all" 
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block mb-1">Deskripsi</label>
+                <input 
+                  type="text" 
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  className="w-full p-3.5 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-amber-500 transition-all" 
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block mb-1">Harga</label>
+                <input 
+                  type="text" 
+                  value={formData.price}
+                  onChange={(e) => setFormData({...formData, price: e.target.value})}
+                  className="w-full p-3.5 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:border-amber-500 transition-all" 
+                  required
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block">Status Aktif</label>
+                <Switch 
+                  checked={formData.available}
+                  onCheckedChange={(checked) => setFormData({...formData, available: checked})}
+                />
+              </div>
+              <button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs transition-all shadow-md mt-2">
+                Update Layanan
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

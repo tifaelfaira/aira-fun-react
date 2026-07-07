@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { FaArrowLeft, FaBox, FaTag, FaMoneyBillWave, FaBuilding, FaStar, FaStarHalfAlt } from "react-icons/fa"
+import { FiShoppingBag, FiHeart } from "react-icons/fi"
 import productsData from "../data/Products.json"
 
 export default function ProductDetail() {
@@ -19,7 +20,6 @@ export default function ProductDetail() {
         }
     }, [id])
 
-    // Render rating stars
     const renderRating = (rating) => {
         const fullStars = Math.floor(rating)
         const hasHalfStar = rating % 1 >= 0.5
@@ -70,7 +70,7 @@ export default function ProductDetail() {
                 <div className="flex flex-col md:flex-row">
                     
                     {/* Bagian Gambar Kiri */}
-                    <div className="w-full md:w-1/2 bg-gradient-to-br from-amber-50 to-amber-100 p-8 flex items-center justify-center min-h-[400px]">
+                    <div className="w-full md:w-1/2 bg-gradient-to-br from-amber-50 to-amber-100 p-8 flex items-center justify-center min-h-[400px] relative">
                         <img 
                             src={product.image} 
                             alt={product.title}
@@ -81,7 +81,6 @@ export default function ProductDetail() {
                             }}
                         />
                         
-                        {/* Badge Kode Produk */}
                         <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-sm text-amber-400 font-mono text-[10px] font-black px-3 py-1.5 rounded-xl uppercase tracking-widest border border-amber-500/30">
                             {product.code}
                         </div>
@@ -102,7 +101,6 @@ export default function ProductDetail() {
                                 {product.description}
                             </p>
                             
-                            {/* Rating */}
                             <div className="flex items-center gap-2 mt-4">
                                 <div className="flex gap-0.5">
                                     {renderRating(product.rating)}
@@ -137,12 +135,17 @@ export default function ProductDetail() {
                             </div>
                         </div>
 
-                        {/* Tombol Aksi */}
+                        {/* ===== TOMBOL BELI SEKARANG LANGSUNG KE WA ===== */}
                         <div className="mt-6 flex gap-3">
-                            <button className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-black py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider">
-                                <FaShoppingBag className="text-sm" />
-                                Beli Sekarang
-                            </button>
+                            <a
+                                href={`https://wa.me/6281266903256?text=Halo%20Crown%26Co.%2C%20saya%20mau%20beli%20produk%20${encodeURIComponent(product.title)}%20dengan%20harga%20Rp%20${product.price.toLocaleString('id-ID')}%20%28${product.code}%29`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-black py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider shadow-lg hover:shadow-amber-500/30"
+                            >
+                                <FiShoppingBag className="text-sm" />
+                                Beli Sekarang via WhatsApp
+                            </a>
                             <button className="px-5 py-3 border border-gray-200 hover:border-amber-500 text-gray-600 hover:text-amber-500 font-bold rounded-xl transition-all text-xs uppercase tracking-wider">
                                 <FiHeart className="text-base" />
                             </button>
@@ -153,6 +156,3 @@ export default function ProductDetail() {
         </div>
     )
 }
-
-// Tambahan import
-import { FiShoppingBag, FiHeart } from "react-icons/fi"

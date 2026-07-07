@@ -154,25 +154,54 @@ export default function Guest() {
     }
   }, [messages, isChatOpen]);
 
+  // ====== AI CHAT YANG SUDAH DIPERBAIKI ======
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!inputMessage.trim()) return;
 
     const userMsg = { id: Date.now(), sender: 'user', text: inputMessage };
     setMessages(prev => [...prev, userMsg]);
+    const question = inputMessage.toLowerCase();
     setInputMessage('');
 
     setTimeout(() => {
-      let botText = "Untuk booking jadwal atau pilih stylist andalan kamu, langsung klik tombol 'Booking Sekarang' di atas ya!";
-      if (inputMessage.toLowerCase().includes('harga') || inputMessage.toLowerCase().includes('bayar')) {
-        botText = "Tarif potong rambut mulai Rp 85.000, sedangkan untuk K-Treatment & Coloring mulai dari Rp 130.000. Cek menu 'Layanan' untuk detailnya.";
-      } else if (inputMessage.toLowerCase().includes('promo') || inputMessage.toLowerCase().includes('diskon')) {
-        botText = "Saat ini Crown & Co. sedang ada promo spesial! Gabung member dapat diskon 20% untuk first visit, plus voucher Rp 25.000 dan bundle serum gratis. Yuk daftar sekarang!";
-      } else if (inputMessage.toLowerCase().includes('stylist') || inputMessage.toLowerCase().includes('cepster')) {
-        botText = "Kami memiliki cepster profesional bersertifikasi dengan rating rata-rata 4.9/5! Rekomendasi terbaik: Kak Jun (Korean Cut Specialist) dan Kak Mina (Coloring Expert).";
-      } else if (inputMessage.toLowerCase().includes('gallery') || inputMessage.toLowerCase().includes('portfolio')) {
-        botText = "Lihat portofolio hasil potongan kami di section Gallery! Ada berbagai gaya rambut dari Korean Cut hingga Fade yang bisa kamu jadikan inspirasi.";
+      let botText = "";
+
+      // ====== CEK KATA KUNCI ======
+      if (question.includes('harga') || question.includes('biaya') || question.includes('bayar') || question.includes('mahal') || question.includes('berapa')) {
+        botText = "💇‍♂️ *Daftar Harga Crown & Co.:*\n\n✂️ Haircut & Styling: Rp 85.000\n💆 Scalp Therapy: Rp 130.000\n🎨 Coloring: Rp 195.000\n🧔 Grooming: Rp 60.000\n✨ K-Treatment Package: Rp 250.000\n\n*Promo Member:* Diskon 20% untuk first visit!";
       }
+      else if (question.includes('promo') || question.includes('diskon') || question.includes('voucher') || question.includes('potongan')) {
+        botText = "🎉 *Promo Spesial Crown & Co.!*\n\n✅ NEW MEMBER: Diskon 20% first visit\n✅ BIRTHDAY REWARD: Free Hair Mask + Treatment\n✅ REFERRAL: Dapat Rp 50.000 untuk Anda & teman\n✅ WEEKEND SPECIAL: Buy 1 Get 1 Free\n\n*Kode Promo:* WELCOME20";
+      }
+      else if (question.includes('stylist') || question.includes('cepster') || question.includes('barber') || question.includes('tukang potong')) {
+        botText = "👨‍🦱 *Cepster Profesional Crown & Co.:*\n\n⭐ Kak Jun (Korean Cut Specialist) - Rating 4.9\n⭐ Kak Mina (Coloring Expert) - Rating 4.8\n⭐ Kak Rizky (Scalp & Hair Specialist) - Rating 4.9\n⭐ Kak Sarah (Barber & Grooming) - Rating 4.7\n\n*Semua cepster kami bersertifikasi profesional!*";
+      }
+      else if (question.includes('gallery') || question.includes('portfolio') || question.includes('foto') || question.includes('hasil')) {
+        botText = "📸 *Lihat Portofolio Kami!*\n\nKami punya berbagai gaya rambut dari Korean Cut, Fade, Coloring, hingga Grooming.\n\n*Kunjungi section GALLERY di halaman ini untuk melihat hasil karya cepster kami!*";
+      }
+      else if (question.includes('alamat') || question.includes('lokasi') || question.includes('dimana') || question.includes('toko') || question.includes('cabang')) {
+        botText = "📍 *Alamat Crown & Co.:*\n\nJl. Raya Kebayoran Lama No. 88\nJakarta Selatan\n\n*Jam Operasional:*\nSenin - Jumat: 09:00 - 21:00\nSabtu: 10:00 - 20:00\nMinggu: 11:00 - 18:00";
+      }
+      else if (question.includes('booking') || question.includes('janji') || question.includes('reservasi') || question.includes('daftar')) {
+        botText = "📅 *Booking di Crown & Co.*\n\nKamu bisa booking dengan 2 cara:\n\n1️⃣ Klik tombol 'Booking Sekarang' di bagian atas halaman ini\n2️⃣ Langsung chat WhatsApp kami di +62 812-6690-3256\n\n*Booking sangat dianjurkan untuk menghindari antrean!*";
+      }
+      else if (question.includes('produk') || question.includes('beli') || question.includes('shampoo') || question.includes('serum')) {
+        botText = "🛍️ *Produk Crown & Co.*\n\nKami menjual produk perawatan rambut premium:\n\n🧴 Chorok-Ip Silk Styling Clay - Rp 120.000\n🧴 Mise-En Glow Water Serum - Rp 100.000\n🧴 Insam Root Anti-Thinning Tonic - Rp 72.250\n\n*Cek section PRODUK untuk detail lengkap!*";
+      }
+      else if (question.includes('member') || (question.includes('daftar') && !question.includes('booking'))) {
+        botText = "👑 *Daftar Member Crown & Co.*\n\nKeuntungan member:\n✅ Diskon 20% first visit\n✅ Voucher Rp 25.000\n✅ Free hair serum\n✅ Poin rewards\n✅ Birthday reward\n\n*Klik tombol 'Member' di navbar untuk daftar sekarang!*";
+      }
+      else if (question.includes('treatment') || question.includes('perawatan') || question.includes('scalp') || question.includes('coloring')) {
+        botText = "💆 *Layanan Perawatan Crown & Co.:*\n\n✂️ Hongdae Trend Cut & Blow - Rp 85.000\n💆 Jeju Volcanic Scalp Therapy - Rp 130.000\n🎨 K-Glass Dimensional Coloring - Rp 195.000\n🧔 Seoul Refresh & Beard Grooming - Rp 60.000\n\n*Cek section LAYANAN untuk info lengkap!*";
+      }
+      else if (question.includes('halo') || question.includes('hai') || question.includes('assalamu') || question.includes('pagi') || question.includes('siang') || question.includes('selamat')) {
+        botText = "👋 Halo! Selamat datang di Crown & Co. Barbershop!\n\nAda yang bisa saya bantu? Tanyakan tentang harga, promo, cepster, booking, atau produk kami ya! 😊";
+      }
+      else {
+        botText = "🤔 Maaf, saya belum mengerti pertanyaan itu. Coba tanyakan tentang:\n\n• Harga layanan\n• Promo & diskon\n• Cepster/stylist\n• Booking & reservasi\n• Produk yang dijual\n• Alamat & jam operasional\n\nAtau klik tombol chat di bawah ini untuk langsung chat via WhatsApp! 📱";
+      }
+
       setMessages(prev => [...prev, { id: Date.now() + 1, sender: 'ai', text: botText }]);
     }, 1000);
   };
@@ -734,7 +763,14 @@ const galleryImages = [
                 </div>
                 <div className="flex justify-between items-center pt-3 border-t border-neutral-200/60 mt-3 group-hover/prod:border-amber-500/20 transition-colors duration-300">
                   <span className="font-black text-neutral-950 text-sm group-hover/prod:text-amber-600 transition-colors duration-300">{prod.price}</span>
-                  <button className="bg-neutral-950 hover:bg-amber-500 hover:text-black text-white font-black text-[9px] uppercase tracking-wider px-3 py-1.5 rounded-lg transition-all duration-300 active:scale-95 flex items-center gap-1 group-hover/prod:shadow-md">
+                  {/* ====== TOMBOL BELI SUDAH DIPERBAIKI ====== */}
+                  <button 
+                    onClick={() => {
+                      const message = `Halo%20Crown%26Co.%0A%0A*PEMBELIAN%20PRODUK%20CROWN%26CO.*%0A%0ASaya%20mau%20beli%20produk%3A%0A📌%20${encodeURIComponent(prod.name)}%0A📌%20Harga%3A%20${prod.price}%0A%0ATerima%20kasih!`;
+                      window.open(`https://wa.me/6281266903256?text=${message}`, '_blank');
+                    }}
+                    className="bg-neutral-950 hover:bg-amber-500 hover:text-black text-white font-black text-[9px] uppercase tracking-wider px-3 py-1.5 rounded-lg transition-all duration-300 active:scale-95 flex items-center gap-1 group-hover/prod:shadow-md"
+                  >
                     Beli <IoArrowForwardOutline className="text-[10px] group-hover/prod:translate-x-1 transition-transform duration-300" />
                   </button>
                 </div>
@@ -965,10 +1001,10 @@ const galleryImages = [
                   <span>Bersertifikasi Profesional</span>
                 </div>
 
-                {/* BOOKING OTOMATIS VIA WHATSAPP */}
+                {/* BOOKING OTOMATIS VIA WHATSAPP - NOMOR UDAH DIGANTI */}
                 <div className="mt-4 flex justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-y-0 translate-y-2">
                   <a
-                    href={`https://wa.me/6281234567890?text=Halo%20Crown%26Co.%2C%20saya%20mau%20booking%20dengan%20${encodeURIComponent(cepster.name)}%20(${encodeURIComponent(cepster.role)})`}
+                    href={`https://wa.me/6281266903256?text=Halo%20Crown%26Co.%2C%20saya%20mau%20booking%20dengan%20${encodeURIComponent(cepster.name)}%20(${encodeURIComponent(cepster.role)})`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-neutral-950 hover:bg-amber-500 hover:text-black text-white font-black text-[8px] uppercase tracking-wider px-4 py-1.5 rounded-lg transition-all duration-300 flex items-center gap-1"
@@ -1065,8 +1101,14 @@ const galleryImages = [
             </div>
           )}
 
+          {/* ====== TOMBOL LIHAT LEBIH BANYAK SUDAH DIPERBAIKI ====== */}
           <div className={`text-center mt-10 transition-all duration-700 delay-500 ${isGalleryIntersecting ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <button className="bg-neutral-950 hover:bg-amber-500 hover:text-black text-white font-black text-[10px] uppercase tracking-wider px-6 py-3 rounded-xl transition-all duration-300 flex items-center gap-2 mx-auto shadow-md group">
+            <button 
+              onClick={() => {
+                window.open('https://wa.me/6281266903256?text=Halo%20Crown%26Co.%2C%20saya%20mau%20lihat%20portofolio%20lengkap', '_blank');
+              }}
+              className="bg-neutral-950 hover:bg-amber-500 hover:text-black text-white font-black text-[10px] uppercase tracking-wider px-6 py-3 rounded-xl transition-all duration-300 flex items-center gap-2 mx-auto shadow-md group"
+            >
               <span>Lihat Lebih Banyak</span>
               <IoArrowForwardOutline className="text-[10px] group-hover:translate-x-1 transition-transform" />
             </button>
@@ -1172,7 +1214,8 @@ const galleryImages = [
             
             const message = `Halo%20Crown%26Co.%0A%0A*FORM%20BOOKING%20CROWN%26CO.*%0A%0ANama%3A%20${encodeURIComponent(name)}%0ANo%20WA%3A%20${encodeURIComponent(phone)}%0ALayanan%3A%20${encodeURIComponent(service)}%0ATanggal%3A%20${encodeURIComponent(date)}%0AJam%3A%20${encodeURIComponent(time)}${notes ? `%0ACatatan%3A%20${encodeURIComponent(notes)}` : ''}`;
             
-            window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
+            // NOMOR WA UDAH DIGANTI
+            window.open(`https://wa.me/6281266903256?text=${message}`, '_blank');
           }}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -1301,7 +1344,7 @@ const galleryImages = [
               <IoArrowForwardOutline className="text-sm group-hover:translate-x-1 transition-transform duration-300" />
             </button>
             <a 
-              href="https://wa.me/6281234567890?text=Halo%20Crown%26Co.%2C%20saya%20mau%20tanya%20tentang%20layanan"
+              href="https://wa.me/6281266903256?text=Halo%20Crown%26Co.%2C%20saya%20mau%20tanya%20tentang%20layanan"
               target="_blank"
               rel="noopener noreferrer"
               className="group bg-white border-2 border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white font-black text-xs uppercase tracking-widest px-8 py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 hover:-translate-y-1"
@@ -1404,7 +1447,7 @@ const galleryImages = [
                 </li>
                 <li className="flex items-center gap-2">
                   <IoChatbubbleOutline className="text-amber-500 shrink-0" />
-                  <span>+62 812-3456-7890</span>
+                  <span>+62 812-6690-3256</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <IoPaperPlaneOutline className="text-amber-500 shrink-0" />
