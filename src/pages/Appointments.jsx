@@ -12,12 +12,12 @@ import {
   FiX,
 } from "react-icons/fi";
 
-// DATA APPOINTMENTS AWAL
+// DATA APPOINTMENTS AWAL - CAPSTER SUDAH DIGANTI
 const initialData = [
   {
     id: 1,
     customer: "Rina Febriani",
-    capster: "Andi Pratama",
+    capster: "Jun Samuel",
     service: "Potong Rambut Pria",
     date: "2026-07-08",
     time: "10:00",
@@ -27,7 +27,7 @@ const initialData = [
   {
     id: 2,
     customer: "Budi Darmawan",
-    capster: "Siti Rahayu",
+    capster: "Sarah Young",
     service: "Coloring & Balayage",
     date: "2026-07-08",
     time: "14:30",
@@ -37,7 +37,7 @@ const initialData = [
   {
     id: 3,
     customer: "Sari Anggraeni",
-    capster: "Budi Santoso",
+    capster: "Rizky M",
     service: "Potong Klasik + Beard",
     date: "2026-07-09",
     time: "09:00",
@@ -47,7 +47,7 @@ const initialData = [
   {
     id: 4,
     customer: "Doni Salman",
-    capster: "Dewi Lestari",
+    capster: "Mina Jey",
     service: "Treatment Rambut Keriting",
     date: "2026-07-09",
     time: "16:00",
@@ -57,7 +57,7 @@ const initialData = [
   {
     id: 5,
     customer: "Mega Putri",
-    capster: "Rizky Febrian",
+    capster: "Erick Rein",
     service: "Beard Grooming",
     date: "2026-07-10",
     time: "11:30",
@@ -76,8 +76,16 @@ const initialData = [
   },
 ];
 
-// LIST CAPSTER & SERVICE
-const capsterList = ["Andi Pratama", "Siti Rahayu", "Budi Santoso", "Dewi Lestari", "Rizky Febrian", "Maya Sari"];
+// LIST CAPSTER - SUDAH DIGANTI PAKE NAMA YANG DI CAPSTER.JSX
+const capsterList = [
+  "Jun Samuel", 
+  "Sarah Young", 
+  "Rizky M", 
+  "Mina Jey", 
+  "Erick Rein", 
+  "Maya Sari"
+];
+
 const serviceList = [
   "Potong Rambut Pria",
   "Potong Rambut Wanita",
